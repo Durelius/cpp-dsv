@@ -1,32 +1,34 @@
 #pragma once
-#include <memory>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <memory>
+#include <string>
 
-namespace gui
-{
+namespace gui {
 
-    class Component
-    {
-    public:
-        virtual ~Component() {}
-        virtual void draw() const = 0;
-        const SDL_FRect &getRect() const { return rect; }
-        void move(int x, int y);
-        virtual void onMouseDown(const SDL_Event &event) {}
-        virtual void onMouseUp(const SDL_Event &event) {}
-        virtual void onKeyDown(const SDL_Event &event) {}
-        virtual void onKeyUp(const SDL_Event &event) {}
-        const std::string getId() const { return id; };
-        Component(const Component &other) = delete;
-        const Component &operator=(const Component &other) = delete;
+class Component {
+public:
+  virtual ~Component() {}
 
-    protected:
-        Component(float x, float y, float w, float h, std::string id);
+  virtual void draw() const = 0;
+  const SDL_FRect& get_rect() const { return rect; }
+  const std::string get_id() const { return id; };
 
-    private:
-        SDL_FRect rect;
-        std::string id;
-    };
-    typedef std::shared_ptr<Component> CompPtr;
-}
+  void move(int x, int y);
+  virtual void on_mouse_down(const SDL_Event& event) {}
+  virtual void on_mouse_up(const SDL_Event& event) {}
+  virtual void on_key_down(const SDL_Event& event) {}
+  virtual void on_key_up(const SDL_Event& event) {}
+
+  Component(const Component& other) = delete;
+  const Component& operator=(const Component& other) = delete;
+
+protected:
+  Component(float x, float y, float w, float h, std::string id);
+
+private:
+  SDL_FRect rect;
+  std::string id;
+};
+typedef std::shared_ptr<Component> component_ptr;
+} // namespace gui
