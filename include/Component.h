@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 
 namespace gui{
 
@@ -9,6 +10,7 @@ namespace gui{
             virtual ~Component(){}
             virtual void draw() const = 0;
             const SDL_FRect& getRect() const { return rect; }
+            void move(int x, int y);
             virtual void onMouseDown(const SDL_Event& event){}
             virtual void onMouseUp(const SDL_Event& event){}
             virtual void onKeyDown(const SDL_Event& event){}

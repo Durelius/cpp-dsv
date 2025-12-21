@@ -20,7 +20,7 @@ namespace gui{
     void Label::setText(std::string newText){
         text = newText;
         SDL_DestroyTexture(tex);
-        SDL_Surface* surf = TTF_RenderText_Solid(eng.getFont(),text.c_str(),0, {0,0,0});
+        SDL_Surface* surf = TTF_RenderText_Blended(eng.getFont(),text.c_str(),0, {0,0,0});
         tex = SDL_CreateTextureFromSurface(eng.getRen(),surf);
         SDL_DestroySurface(surf);
     }

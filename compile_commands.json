@@ -1,0 +1,92 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++23",
+      "-Wall",
+      "-O0",
+      "-g",
+      "-Iinclude",
+      "-I/opt/homebrew/include",
+      "-o",
+      "build/debug/play",
+      "src/Button.cpp"
+    ],
+    "directory": "/Users/josh/code/c/cpp-dsv",
+    "file": "/Users/josh/code/c/cpp-dsv/src/Button.cpp",
+    "output": "/Users/josh/code/c/cpp-dsv/build/debug/play"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++23",
+      "-Wall",
+      "-O0",
+      "-g",
+      "-Iinclude",
+      "-I/opt/homebrew/include",
+      "-o",
+      "build/debug/play",
+      "src/Component.cpp"
+    ],
+    "directory": "/Users/josh/code/c/cpp-dsv",
+    "file": "/Users/josh/code/c/cpp-dsv/src/Component.cpp",
+    "output": "/Users/josh/code/c/cpp-dsv/build/debug/play"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++23",
+      "-Wall",
+      "-O0",
+      "-g",
+      "-Iinclude",
+      "-I/opt/homebrew/include",
+      "-o",
+      "build/debug/play",
+      "src/f12_Main.cpp"
+    ],
+    "directory": "/Users/josh/code/c/cpp-dsv",
+    "file": "/Users/josh/code/c/cpp-dsv/src/f12_Main.cpp",
+    "output": "/Users/josh/code/c/cpp-dsv/build/debug/play"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++23",
+      "-Wall",
+      "-O0",
+      "-g",
+      "-Iinclude",
+      "-I/opt/homebrew/include",
+      "-o",
+      "build/debug/play",
+      "src/GUIEngine.cpp"
+    ],
+    "directory": "/Users/josh/code/c/cpp-dsv",
+    "file": "/Users/josh/code/c/cpp-dsv/src/GUIEngine.cpp",
+    "output": "/Users/josh/code/c/cpp-dsv/build/debug/play"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++23",
+      "-Wall",
+      "-O0",
+      "-g",
+      "-Iinclude",
+      "-I/opt/homebrew/include",
+      "-o",
+      "build/debug/play",
+      "src/Label.cpp"
+    ],
+    "directory": "/Users/josh/code/c/cpp-dsv",
+    "file": "/Users/josh/code/c/cpp-dsv/src/Label.cpp",
+    "output": "/Users/josh/code/c/cpp-dsv/build/debug/play"
+  }
+]
