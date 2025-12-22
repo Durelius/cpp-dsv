@@ -15,6 +15,8 @@ public:
   const std::string get_id() const { return id; };
 
   void move(int x, int y);
+  void set_coordinates(int x, int y);
+  void border_detection();
   virtual void on_mouse_down(const SDL_Event& event) {}
   virtual void on_mouse_up(const SDL_Event& event) {}
   virtual void on_key_down(const SDL_Event& event) {}

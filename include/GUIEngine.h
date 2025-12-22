@@ -21,6 +21,7 @@ public:
   ~GUIEngine();
   SDL_Renderer* get_renderer() const { return renderer; }
   TTF_Font* get_font() const { return font; }
+  SDL_Window* get_window() const { return window; }
 
   void set_player(std::shared_ptr<Player> p);
   void add_component(component_ptr c);
