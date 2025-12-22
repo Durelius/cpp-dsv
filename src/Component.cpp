@@ -2,7 +2,7 @@
 #include "Constants.h"
 #include "GUIEngine.h"
 #include <iostream>
-
+// TODO: implement 'remove component' method
 namespace gui {
 Component::Component(float x, float y, float w, float h, std::string id)
     : rect(x, y, w, h), id(id) {}
