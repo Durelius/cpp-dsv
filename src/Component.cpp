@@ -21,8 +21,7 @@ void Component::border_detection() {
     rect.x = 0;
   if (rect.y < 0)
     rect.y = 0;
-  int w = 0;
-  int h = 0;
+  int w, h;
   SDL_GetWindowSize(eng.get_window(), &w, &h);
   if (rect.x > w - rect.w)
     rect.x = w - rect.w;

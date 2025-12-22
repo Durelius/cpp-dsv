@@ -21,13 +21,13 @@ player_pointer Player::make(float x, float y, float w, float h,
 void Player::draw() const { Sprite::draw(); }
 
 void Player::player_update() {
-  if (keystate[SDL_SCANCODE_W])
+  if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP])
     move(0, -5);
-  if (keystate[SDL_SCANCODE_S])
+  if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN])
     move(0, 5);
-  if (keystate[SDL_SCANCODE_A])
+  if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT])
     move(-5, 0);
-  if (keystate[SDL_SCANCODE_D])
+  if (keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT])
     move(5, 0);
 }
 
