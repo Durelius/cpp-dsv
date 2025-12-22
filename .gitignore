@@ -1,10 +1,11 @@
-compile_commands.json
-.DS_Store
-main.cpp
-build
-build/
-build/*
-build/debug/
-build/debug/*
+# Keep build folders but ignore 'play*' files inside
+build/debug/play*
+build/debug/play*/**
+build/play*
+build/play*/**
+
+# Optional: ignore .cache as before
 .cache
-.cache/
+.DS_Store
+compile_commands.json
+main.cpp
