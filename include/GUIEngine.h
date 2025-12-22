@@ -3,6 +3,7 @@
 #include "Player.h"
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <chrono>
 #include <memory>
 #include <vector>
 
@@ -23,6 +24,7 @@ public:
   void game_draw();
   void game_events();
   void game_run();
+  void lock_frame_rate(std::chrono::_V2::steady_clock::time_point start);
 
 private:
   SDL_Window* window;

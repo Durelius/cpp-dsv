@@ -1,7 +1,6 @@
 #include "GUIEngine.h"
 #include "Constants.h"
 #include "Player.h"
-#include <chrono>
 #include <iostream>
 #include <memory>
 
@@ -82,15 +81,19 @@ void GUIEngine::game_run() {
     game_events();
     player->player_update();
     game_draw();
-    auto end = std::chrono::steady_clock::now();
-    std::chrono::duration<double> dur = end - start;
-    constexpr auto min_frame = std::chrono::duration<double>(1.0 / 60.0);
-    if (dur < min_frame) {
-      auto delay = std::chrono::duration_cast<std::chrono::milliseconds>(
-          min_frame - dur);
+    lock_frame_rate(start);
+  }
+}
+void GUIEngine::lock_frame_rate(
+    std::chrono::_V2::steady_clock::time_point start) {
+  auto end = std::chrono::steady_clock::now();
+  std::chrono::duration<double> dur = end - start;
+  constexpr auto min_frame = std::chrono::duration<double>(1.0 / 60.0);
+  if (dur < min_frame) {
+    auto delay =
+        std::chrono::duration_cast<std::chrono::milliseconds>(min_frame - dur);
 
-      SDL_Delay(static_cast<Uint32>(delay.count()));
-    }
+    SDL_Delay(static_cast<Uint32>(delay.count()));
   }
 }
 
