@@ -6,7 +6,7 @@
 namespace gui {
 
 label_ptr Label::make(float x, float y, float w, float h, std::string text,
-                     std::string id) {
+                      std::string id) {
   return label_ptr(new Label(x, y, w, h, text, id));
 }
 

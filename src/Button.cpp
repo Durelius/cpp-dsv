@@ -27,14 +27,14 @@ void Button::draw() const {
   Label::draw();
 }
 
-void Button::on_mouse_down(const SDL_Event &event) {
+void Button::on_mouse_down(const SDL_Event& event) {
   SDL_FPoint point = {event.button.x, event.button.y};
   if (SDL_PointInRectFloat(&point, &get_rect())) {
     down = true;
   }
 } // onMouseDown
 
-void Button::on_mouse_up(const SDL_Event &event) {
+void Button::on_mouse_up(const SDL_Event& event) {
   SDL_FPoint point = {event.button.x, event.button.y};
   if (down && SDL_PointInRectFloat(&point, &get_rect())) {
     action(get_id());

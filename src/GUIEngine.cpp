@@ -1,6 +1,7 @@
 #include "GUIEngine.h"
 #include "Constants.h"
 #include "Player.h"
+#include <chrono>
 #include <iostream>
 #include <memory>
 
@@ -24,9 +25,7 @@ GUIEngine::~GUIEngine() {
   SDL_Quit();
 }
 
-void GUIEngine::set_player(std::shared_ptr<Player> p) {
-  player = p;
-}
+void GUIEngine::set_player(std::shared_ptr<Player> p) { player = p; }
 
 void GUIEngine::add_component(component_ptr c) {
   for (auto component : components) {
@@ -79,9 +78,19 @@ void GUIEngine::game_events() {
 void GUIEngine::game_run() {
   running = true;
   while (running) {
+    auto start = std::chrono::steady_clock::now();
     game_events();
     player->player_update();
     game_draw();
+    auto end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> dur = end - start;
+    constexpr auto min_frame = std::chrono::duration<double>(1.0 / 60.0);
+    if (dur < min_frame) {
+      auto delay = std::chrono::duration_cast<std::chrono::milliseconds>(
+          min_frame - dur);
+
+      SDL_Delay(static_cast<Uint32>(delay.count()));
+    }
   }
 }
 
