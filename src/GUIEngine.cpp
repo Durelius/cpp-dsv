@@ -3,6 +3,7 @@
 #include "Player.h"
 #include <iostream>
 #include <memory>
+#include <ostream>
 
 namespace cnts = constants;
 namespace gui {
@@ -30,10 +31,10 @@ void GUIEngine::add_component(component_ptr c) {
   for (auto component : components) {
     std::cout << c->get_id() << component->get_id() << std::endl;
     if (c->get_id() == component->get_id()) {
+      std::cerr << "ID already exists" << std::endl;
       throw new std::invalid_argument("ID already exists");
     }
   }
-
   components.push_back(c);
 }
 
@@ -77,22 +78,21 @@ void GUIEngine::game_events() {
 void GUIEngine::game_run() {
   running = true;
   while (running) {
-    auto start = std::chrono::steady_clock::now();
+    auto start = steady_clock::now();
     game_events();
     player->player_update();
     game_draw();
     lock_frame_rate(start);
   }
 }
-void GUIEngine::lock_frame_rate(
-    std::chrono::_V2::steady_clock::time_point start) {
-  auto end = std::chrono::steady_clock::now();
-  std::chrono::duration<double> dur = end - start;
-  constexpr auto min_frame = std::chrono::duration<double>(1.0 / 60.0);
-  if (dur < min_frame) {
-    auto delay =
-        std::chrono::duration_cast<std::chrono::milliseconds>(min_frame - dur);
 
+void GUIEngine::lock_frame_rate(time_point start) {
+  auto end = steady_clock::now();
+  duration d = end - start;
+  constexpr auto min_frame = duration(1.0 / 60.0);
+  if (d < min_frame) {
+    auto delay =
+        std::chrono::duration_cast<std::chrono::milliseconds>(min_frame - d);
     SDL_Delay(static_cast<Uint32>(delay.count()));
   }
 }

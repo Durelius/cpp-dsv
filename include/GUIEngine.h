@@ -11,6 +11,9 @@ namespace gui {
 class Component;
 
 typedef std::shared_ptr<Component> component_ptr;
+typedef std::chrono::steady_clock::time_point time_point;
+typedef std::chrono::steady_clock steady_clock;
+typedef std::chrono::duration<double> duration;
 
 class GUIEngine {
 public:
@@ -24,7 +27,7 @@ public:
   void game_draw();
   void game_events();
   void game_run();
-  void lock_frame_rate(std::chrono::_V2::steady_clock::time_point start);
+  void lock_frame_rate(time_point start);
 
 private:
   SDL_Window* window;
