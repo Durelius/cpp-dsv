@@ -1,5 +1,9 @@
 compile_commands.json
 .DS_Store
 main.cpp
+build
 build/
+build/*
+build/debug/
+build/debug/*
 .cache/
