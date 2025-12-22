@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "GUIEngine.h"
 
 namespace gui {
 typedef std::shared_ptr<Player> player_pointer;
@@ -11,7 +12,9 @@ Player::Player(float x, float y, float w, float h, std::string path_to_image,
 
 player_pointer Player::make(float x, float y, float w, float h,
                             std::string path_to_image, std::string id) {
-  return player_pointer(new Player(x, y, w, h, path_to_image, id));
+  auto pp = player_pointer(new Player(x, y, w, h, path_to_image, id));
+  eng.add_component(pp);
+  return pp;
 }
 
 void Player::draw() const { Sprite::draw(); }

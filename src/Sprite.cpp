@@ -13,7 +13,9 @@ Sprite::Sprite(float x, float y, float w, float h, std::string path_to_image,
 
 sprite_pointer Sprite::make(float x, float y, float w, float h,
                             std::string path_to_image, std::string id) {
-  return sprite_pointer(new Sprite(x, y, w, h, path_to_image, id));
+  auto sp = sprite_pointer(new Sprite(x, y, w, h, path_to_image, id));
+  eng.add_component(sp);
+  return sp;
 }
 
 void Sprite::draw() const {

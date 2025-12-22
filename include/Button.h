@@ -11,8 +11,8 @@ public:
   static std::shared_ptr<Button> make(float x, float y, float w, float h,
                                       std::string text, Action action,
                                       std::string id);
-  void on_mouse_down(const SDL_Event& event);
-  void on_mouse_up(const SDL_Event& event);
+  void on_mouse_down(const SDL_Event &event);
+  void on_mouse_up(const SDL_Event &event);
   void draw() const;
 
 protected:
