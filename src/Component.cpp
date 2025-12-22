@@ -1,8 +1,6 @@
 #include "Component.h"
-#include "Constants.h"
 #include "GUIEngine.h"
-#include <iostream>
-// TODO: implement 'remove component' method
+
 namespace gui {
 Component::Component(float x, float y, float w, float h, std::string id)
     : rect(x, y, w, h), id(id) {}
@@ -21,7 +19,8 @@ void Component::border_detection() {
     rect.x = 0;
   if (rect.y < 0)
     rect.y = 0;
-  int w, h;
+  int w;
+  int h;
   SDL_GetWindowSize(eng.get_window(), &w, &h);
   if (rect.x > w - rect.w)
     rect.x = w - rect.w;

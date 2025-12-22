@@ -14,7 +14,6 @@ public:
 
   void draw() const;
   void player_update();
-  // void on_key_down(const SDL_Event& event);
 
 protected:
   Player(float x, float y, float w, float h, std::string path_to_image,

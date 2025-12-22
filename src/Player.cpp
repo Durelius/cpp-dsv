@@ -22,32 +22,13 @@ void Player::draw() const { Sprite::draw(); }
 
 void Player::player_update() {
   if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP])
-    move(0, -5);
+      move(0, -get_velocity());
   if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN])
-    move(0, 5);
+    move(0, get_velocity());
   if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT])
-    move(-5, 0);
+    move(-get_velocity(), 0);
   if (keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT])
-    move(5, 0);
+    move(get_velocity(), 0);
 }
-
-// void Player::on_key_down(const SDL_Event& event) {
-//   switch (event.key.scancode) {
-//   case SDL_SCANCODE_W:
-//     move(0, -10);
-//     break;
-//   case SDL_SCANCODE_A:
-//     move(-10, 0);
-//     break;
-//   case SDL_SCANCODE_S:
-//     move(0, 10);
-//     break;
-//   case SDL_SCANCODE_D:
-//     move(10, 0);
-//     break;
-//   default:
-//     break;
-//   }
-// }
 
 } // namespace gui

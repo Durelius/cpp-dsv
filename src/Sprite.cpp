@@ -22,4 +22,8 @@ void Sprite::draw() const {
   SDL_RenderTexture(eng.get_renderer(), sprite_image, NULL, &get_rect());
 }
 
+void Sprite::set_velocity(int v) {
+  velocity = v;
+}
+
 } // namespace gui
