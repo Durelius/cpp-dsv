@@ -25,7 +25,7 @@ public:
   void set_points_on_death(int points_on_death) {
     this->points_on_death = &points_on_death;
   }
-  void set_collisionable(bool col) { this->collisionable = &collisionable; }
+  void set_collisionable(bool col) { this->collisionable = collisionable; }
 
 protected:
   Interactable(float x, float y, float w, float h, std::string path_to_image,
