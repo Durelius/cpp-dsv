@@ -1,3 +1,0 @@
-compile_commands.json
-.DS_Store
-main.cpp

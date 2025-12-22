@@ -13,11 +13,15 @@ public:
                              std::string path_to_image, std::string id);
 
   void draw() const;
-  void on_key_down(const SDL_Event& event);
+  void player_update();
+  // void on_key_down(const SDL_Event& event);
 
 protected:
   Player(float x, float y, float w, float h, std::string path_to_image,
          std::string id);
+
+private:
+  const bool* keystate;
 };
 
 } // namespace gui

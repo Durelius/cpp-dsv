@@ -1,14 +1,16 @@
 #include "GUIEngine.h"
 #include "Constants.h"
+#include "Player.h"
 #include <iostream>
+#include <memory>
 
 namespace cnts = constants;
 namespace gui {
 
 GUIEngine::GUIEngine() {
   SDL_Init(SDL_INIT_VIDEO);
-  window = SDL_CreateWindow("GUIExempel", cnts::gScreenWidth, cnts::gScreenHeight,
-                         0);
+  window = SDL_CreateWindow("GUIExempel", cnts::gScreenWidth,
+                            cnts::gScreenHeight, 0);
   renderer = SDL_CreateRenderer(window, NULL);
   TTF_Init();
   font = TTF_OpenFont((cnts::gResPath + "fonts/arial.ttf").c_str(), 24);
@@ -20,6 +22,10 @@ GUIEngine::~GUIEngine() {
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
+}
+
+void GUIEngine::set_player(std::shared_ptr<Player> p) {
+  player = p;
 }
 
 void GUIEngine::add_component(component_ptr c) {
@@ -36,6 +42,7 @@ void GUIEngine::add_component(component_ptr c) {
 void GUIEngine::game_draw() {
   SDL_RenderClear(renderer);
   SDL_SetRenderDrawColor(renderer, 9, 13, 19, 255);
+  player->draw();
   for (auto component : components)
     component->draw();
   SDL_RenderPresent(renderer);
@@ -73,6 +80,7 @@ void GUIEngine::game_run() {
   running = true;
   while (running) {
     game_events();
+    player->player_update();
     game_draw();
   }
 }

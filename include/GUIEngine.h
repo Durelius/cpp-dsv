@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "Player.h"
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <memory>
@@ -17,6 +18,7 @@ public:
   SDL_Renderer* get_renderer() const { return renderer; }
   TTF_Font* get_font() const { return font; }
 
+  void set_player(std::shared_ptr<Player> p);
   void add_component(component_ptr c);
   void game_draw();
   void game_events();
@@ -27,6 +29,7 @@ private:
   SDL_Renderer* renderer;
   TTF_Font* font;
   std::vector<component_ptr> components;
+  std::shared_ptr<Player> player;
   bool running;
 };
 extern GUIEngine eng;
