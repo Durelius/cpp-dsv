@@ -19,6 +19,8 @@ sprite_pointer Sprite::make(float x, float y, float w, float h,
 }
 
 void Sprite::draw() const {
+  // SDL_SetRenderDrawColor(eng.get_renderer(), 255, 0, 0, 255);
+  // SDL_RenderFillRect(eng.get_renderer(), &get_rect());
   SDL_RenderTexture(eng.get_renderer(), sprite_image, NULL, &get_rect());
 }
 

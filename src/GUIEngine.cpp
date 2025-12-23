@@ -40,10 +40,10 @@ void GUIEngine::add_component(component_ptr c) {
 
 void GUIEngine::game_draw() {
   SDL_RenderClear(renderer);
-  SDL_SetRenderDrawColor(renderer, 9, 13, 19, 255);
   player->draw();
   for (auto component : components)
     component->draw();
+  SDL_SetRenderDrawColor(renderer, 9, 13, 19, 255);
   SDL_RenderPresent(renderer);
 }
 
