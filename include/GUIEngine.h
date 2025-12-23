@@ -23,7 +23,8 @@ public:
   TTF_Font* get_font() const { return font; }
   SDL_Window* get_window() const { return window; }
 
-  void set_player(std::shared_ptr<Player> p);
+  void set_player(std::shared_ptr<Player> p) { player = p; }
+  void set_test_sprite(std::shared_ptr<Sprite> s) { test_sprite = s; }
   void add_component(component_ptr c);
   void game_draw();
   void game_events();
@@ -36,6 +37,7 @@ private:
   TTF_Font* font;
   std::vector<component_ptr> components;
   std::shared_ptr<Player> player;
+  std::shared_ptr<Sprite> test_sprite;
   bool running;
 };
 extern GUIEngine eng;

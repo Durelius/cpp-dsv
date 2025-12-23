@@ -12,7 +12,9 @@ public:
   static sprite_pointer make(float x, float y, float w, float h,
                              std::string path_to_image, std::string id);
   void draw() const;
-  void set_velocity(int v);
+  void track_target(sprite_pointer other);
+
+  void set_velocity(float v);
   const int get_velocity() { return velocity; }
 
   ~Sprite() { SDL_DestroyTexture(sprite_image); }
@@ -23,7 +25,7 @@ protected:
 
 private:
   SDL_Texture* sprite_image;
-  int velocity = 1;
+  float velocity = 1;
 };
 
 } // namespace gui

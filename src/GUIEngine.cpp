@@ -25,8 +25,6 @@ GUIEngine::~GUIEngine() {
   SDL_Quit();
 }
 
-void GUIEngine::set_player(std::shared_ptr<Player> p) { player = p; }
-
 void GUIEngine::add_component(component_ptr c) {
   for (auto component : components) {
     std::cout << c->get_id() << component->get_id() << std::endl;
@@ -40,7 +38,6 @@ void GUIEngine::add_component(component_ptr c) {
 
 void GUIEngine::game_draw() {
   SDL_RenderClear(renderer);
-  player->draw();
   for (auto component : components)
     component->draw();
   SDL_SetRenderDrawColor(renderer, 9, 13, 19, 255);
@@ -81,6 +78,7 @@ void GUIEngine::game_run() {
     auto start = steady_clock::now();
     game_events();
     player->player_update();
+    test_sprite->track_target(player);
     game_draw();
     lock_frame_rate(start);
   }
