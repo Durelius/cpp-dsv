@@ -4,6 +4,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <chrono>
+#include <functional>
+#include <interactable.h>
 #include <memory>
 #include <vector>
 
@@ -24,12 +26,18 @@ public:
   SDL_Window* get_window() const { return window; }
 
   void set_player(std::shared_ptr<Player> p) { player = p; }
-  void set_test_sprite(std::shared_ptr<Sprite> s) { test_sprite = s; }
+  // void set_test_sprite(std::shared_ptr<Sprite> s) { test_sprite = s; }
   void add_component(component_ptr c);
   void game_draw();
   void game_events();
   void game_run();
   void lock_frame_rate(time_point start);
+  void queue_for_add(std::function<void()> task) {
+    creation_queue.push_back(std::move(task));
+  }
+  bool is_colliding(const Sprite& moving_object);
+
+  component_ptr get_by_id(std::string id);
 
 private:
   SDL_Window* window;
@@ -37,7 +45,12 @@ private:
   TTF_Font* font;
   std::vector<component_ptr> components;
   std::shared_ptr<Player> player;
-  std::shared_ptr<Sprite> test_sprite;
+  std::vector<std::function<void()>> creation_queue;
+
+  void track_targets();
+  void handle_creation_queue();
+
+  // std::shared_ptr<Sprite> test_sprite;
   bool running;
 };
 extern GUIEngine eng;

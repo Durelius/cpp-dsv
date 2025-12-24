@@ -13,29 +13,44 @@ class Interactable : public Sprite {
 
 public:
   static interactable_pointer make(float x, float y, float w, float h,
-                                   std::string path_to_image, std::string id);
-
+                                   std::string path_to_image, std::string id,
+                                   bool non_colliding_spawn_point);
+  void do_track_target();
+  void set_track_target(interactable_pointer other) {
+    track_target = other;
+    has_track_target = true;
+  };
+  bool track_target_safe() { return has_track_target; }
   void draw() const;
-  // void on_key_down(const SDL_Event& event);
   const int get_health() const { return *this->health; }
   const int get_points_on_death() const { return *this->points_on_death; }
-  const bool get_collisionable() const { return this->collisionable; }
 
-  void set_health(int health) { this->health = &health; }
-  void set_points_on_death(int points_on_death) {
-    this->points_on_death = &points_on_death;
+  const bool get_health_safe() const { return this->has_health; }
+  const bool get_points_on_death_safe() const {
+    return this->has_points_on_death;
   }
-  void set_collisionable(bool col) { this->collisionable = collisionable; }
+
+  void set_health(int health) {
+    has_points_on_death = health;
+
+    this->health = std::make_unique<int>(health);
+  }
+  void set_points_on_death(int points_on_death) {
+    has_points_on_death = true;
+    this->points_on_death = std::make_unique<int>(points_on_death);
+  }
 
 protected:
   Interactable(float x, float y, float w, float h, std::string path_to_image,
                std::string id);
 
 private:
-  const bool* keystate;
-  int* health = nullptr;
-  int* points_on_death = nullptr;
-  bool collisionable = true;
+  std::unique_ptr<int> health;
+  std::unique_ptr<int> points_on_death;
+  interactable_pointer track_target;
+  bool has_track_target = false;
+  bool has_health = false;
+  bool has_points_on_death = false;
 };
 
 } // namespace gui

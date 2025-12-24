@@ -26,14 +26,39 @@ GUIEngine::~GUIEngine() {
 }
 
 void GUIEngine::add_component(component_ptr c) {
+  if (!c) {
+    std::cerr << "Tried to add null component" << std::endl;
+    throw std::invalid_argument("Tried to add null component");
+  }
+
   for (auto component : components) {
-    std::cout << c->get_id() << component->get_id() << std::endl;
+    // std::cout << component->get_id() << std::endl;
     if (c->get_id() == component->get_id()) {
       std::cerr << "ID already exists" << std::endl;
-      throw new std::invalid_argument("ID already exists");
+      throw std::invalid_argument("ID already exists");
     }
   }
-  components.push_back(c);
+  this->queue_for_add([this, c]() {
+    if (auto sprite = std::dynamic_pointer_cast<Sprite>(c)) {
+      int counter = 0;
+      while (sprite->get_non_colliding_spawn_point() &&
+             eng.is_colliding(*sprite)) {
+        sprite->set_coordinates(sprite->get_rect().x + 5,
+                                sprite->get_rect().y + 5);
+        if (counter > 100)
+          break;
+      }
+    }
+    components.push_back(c);
+  });
+}
+component_ptr GUIEngine::get_by_id(std::string id) {
+  for (auto& c : components) {
+    if (c->get_id() == id) {
+      return c;
+    }
+  }
+  return nullptr;
 }
 
 void GUIEngine::game_draw() {
@@ -78,9 +103,35 @@ void GUIEngine::game_run() {
     auto start = steady_clock::now();
     game_events();
     player->player_update();
-    test_sprite->track_target(player);
     game_draw();
+    handle_creation_queue();
+    track_targets();
     lock_frame_rate(start);
+  }
+}
+void GUIEngine::handle_creation_queue() {
+  for (auto& task : creation_queue) {
+    task();
+  }
+  creation_queue.clear();
+}
+bool GUIEngine::is_colliding(const Sprite& moving_object) {
+  for (auto& c : components) {
+    if (c->get_id() == moving_object.get_id())
+      continue;
+    if (auto sprite = std::dynamic_pointer_cast<Sprite>(c)) {
+      if (sprite->get_collisionable() && sprite->is_colliding(moving_object))
+        return true;
+    }
+  }
+  return false;
+}
+void GUIEngine::track_targets() {
+  for (auto& c : components) {
+    if (auto interactable = std::dynamic_pointer_cast<Interactable>(c)) {
+      if (interactable->track_target_safe())
+        interactable->do_track_target();
+    }
   }
 }
 

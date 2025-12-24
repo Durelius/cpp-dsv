@@ -1,5 +1,6 @@
 #include "Component.h"
 #include "GUIEngine.h"
+#include <iostream>
 
 namespace gui {
 Component::Component(float x, float y, float w, float h, std::string id)
@@ -11,6 +12,7 @@ void Component::set_coordinates(int x, int y) {
 }
 
 void Component::move(int x, int y) {
+
   rect.x += x;
   rect.y += y;
   border_detection();
@@ -31,25 +33,24 @@ void Component::border_detection() {
   if (rect.y > window_height - rect.h)
     rect.y = window_height - rect.h;
 }
+bool Component::is_colliding(const Component& other) {
+  int this_x_start = rect.x;
+  int this_x_end = rect.x + rect.w;
+  int this_y_start = rect.y;
+  int this_y_end = rect.y + rect.h;
 
-bool Component::is_colliding(const component_ptr other) {
-  int this_x_min = rect.x;
-  int this_x_max = rect.x + rect.w;
-  int this_y_min = rect.y;
-  int this_y_max = rect.y + rect.h;
+  int other_x_start = other.get_rect().x;
+  int other_x_end = other.get_rect().x + other.get_rect().w;
+  int other_y_start = other.get_rect().y;
+  int other_y_end = other.get_rect().y + other.get_rect().h;
 
-  int other_x_min = other->get_rect().x;
-  int other_x_max = other->get_rect().x + other->get_rect().w;
-  int other_y_min = other->get_rect().y;
-  int other_y_max = other->get_rect().y + other->get_rect().h;
-
-  if (this_y_max < other_y_min)
+  if (this_y_end < other_y_start)
     return false;
-  if (other_y_max < this_y_min)
+  if (other_y_end < this_y_start)
     return false;
-  if (this_x_max < other_x_min)
+  if (this_x_end < other_x_start)
     return false;
-  if (other_x_max < this_x_min)
+  if (other_x_end < this_x_start)
     return false;
 
   return true;

@@ -21,8 +21,9 @@ player_pointer Player::make(float x, float y, float w, float h,
 void Player::draw() const { Sprite::draw(); }
 
 void Player::player_update() {
+
   if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP])
-      move(0, -get_velocity());
+    move(0, -get_velocity());
   if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN])
     move(0, get_velocity());
   if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT])
