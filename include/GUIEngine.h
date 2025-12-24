@@ -12,7 +12,8 @@
 namespace gui {
 class Component;
 
-typedef std::shared_ptr<Component> component_ptr;
+typedef std::shared_ptr<Component> Component_ptr;
+typedef std::shared_ptr<Sprite> Sprite_ptr;
 typedef std::chrono::steady_clock::time_point time_point;
 typedef std::chrono::steady_clock steady_clock;
 typedef std::chrono::duration<double> duration;
@@ -27,7 +28,8 @@ public:
 
   void set_player(std::shared_ptr<Player> p) { player = p; }
   // void set_test_sprite(std::shared_ptr<Sprite> s) { test_sprite = s; }
-  void add_component(component_ptr c);
+  void add_component(Component_ptr c);
+  void add_sprite(Sprite_ptr c);
   void game_draw();
   void game_events();
   void game_run();
@@ -38,17 +40,18 @@ public:
     creation_queue.push_back(std::move(task));
   }
 
-  void prevent_spawn_collision(component_ptr c);
+  void prevent_spawn_collision(Sprite_ptr sp);
 
-  bool is_colliding(const Sprite& moving_object);
+  bool is_colliding(const Sprite& moving_object) const;
 
-  component_ptr get_by_id(std::string id);
+  Component_ptr get_by_id(std::string id);
 
 private:
   SDL_Window* window;
   SDL_Renderer* renderer;
   TTF_Font* font;
-  std::vector<component_ptr> components;
+  std::vector<Component_ptr> components;
+  std::vector<Sprite_ptr> sprites;
   std::shared_ptr<Player> player;
   std::vector<std::function<void()>> creation_queue;
 

@@ -4,19 +4,19 @@
 #include <string>
 // movable ? - bool, setmovable, default to false
 // health ? - int, set to 0 for immortal ?, sethealth, default to null
-// collisionable - bool, setcollisionable, default to true
 // points to give on death - int, default to 0 or null
 namespace gui {
 
 class Interactable : public Sprite {
-  typedef std::shared_ptr<Interactable> interactable_pointer;
+  typedef std::shared_ptr<Interactable> Interactable_ptr;
+  typedef std::shared_ptr<Sprite> Sprite_ptr;
 
 public:
-  static interactable_pointer make(float x, float y, float w, float h,
-                                   std::string path_to_image, std::string id,
-                                   bool non_colliding_spawn_point);
+  static Interactable_ptr make(float x, float y, float w, float h,
+                               std::string path_to_image, std::string id,
+                               bool non_colliding_spawn_point);
   void do_track_target();
-  void set_track_target(interactable_pointer other) {
+  void set_track_target(Sprite_ptr other) {
     track_target = other;
     has_track_target = true;
   };
@@ -47,7 +47,7 @@ protected:
 private:
   std::unique_ptr<int> health;
   std::unique_ptr<int> points_on_death;
-  interactable_pointer track_target;
+  Sprite_ptr track_target;
   bool has_track_target = false;
   bool has_health = false;
   bool has_points_on_death = false;

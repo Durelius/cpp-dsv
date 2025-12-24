@@ -13,15 +13,18 @@ public:
                              std::string path_to_image, std::string id,
                              bool non_colliding_spawn_point);
   const int get_velocity() { return velocity; }
-  const bool get_collisionable() const { return this->collisionable; }
+  const bool can_collide() const { return this->collisionable; }
   const bool get_non_colliding_spawn_point() const {
     return this->non_colliding_spawn_point;
   }
 
   void draw() const;
-  void set_collisionable(bool col) { this->collisionable = collisionable; }
+  void set_can_collide(bool col) { this->collisionable = col; }
   void set_velocity(float v);
   void move(int x, int y);
+  void border_detection();
+
+  bool is_colliding(const Sprite& other) const;
 
   ~Sprite() { SDL_DestroyTexture(sprite_image); }
 

@@ -25,7 +25,7 @@ GUIEngine::~GUIEngine() {
   SDL_Quit();
 }
 
-void GUIEngine::add_component(component_ptr c) {
+void GUIEngine::add_component(Component_ptr c) {
   if (!c) {
     std::cerr << "Tried to add null component" << std::endl;
     throw std::invalid_argument("Tried to add null component");
@@ -38,27 +38,45 @@ void GUIEngine::add_component(component_ptr c) {
       throw std::invalid_argument("ID already exists");
     }
   }
-  this->queue_for_add([this, c]() {
-    prevent_spawn_collision(c);
-    components.push_back(c);
-  });
+  this->queue_for_add([this, c]() { components.push_back(c); });
 }
-void GUIEngine::prevent_spawn_collision(component_ptr c) {
-  if (auto sprite = std::dynamic_pointer_cast<Sprite>(c)) {
-    int counter = 0;
-    while (sprite->get_non_colliding_spawn_point() && is_colliding(*sprite)) {
-      sprite->set_coordinates(sprite->get_rect().x + 5,
-                              sprite->get_rect().y + 5);
-      if (counter > 100)
-        break;
-      counter++;
+void GUIEngine::add_sprite(Sprite_ptr sp) {
+  if (!sp) {
+    std::cerr << "Tried to add null component" << std::endl;
+    throw std::invalid_argument("Tried to add null component");
+  }
+
+  for (auto sprite : sprites) {
+    // std::cout << component->get_id() << std::endl;
+    if (sp->get_id() == sprite->get_id()) {
+      std::cerr << "ID already exists" << std::endl;
+      throw std::invalid_argument("ID already exists");
     }
   }
+  this->queue_for_add([this, sp]() {
+    prevent_spawn_collision(sp);
+    sprites.push_back(sp);
+  });
 }
-component_ptr GUIEngine::get_by_id(std::string id) {
+// attemps 100 spawn locations incrementing both X and Y by 5, until we give up
+void GUIEngine::prevent_spawn_collision(Sprite_ptr sp) {
+  int counter = 0;
+  while (sp->get_non_colliding_spawn_point() && is_colliding(*sp)) {
+    sp->set_coordinates(sp->get_rect().x + 5, sp->get_rect().y + 5);
+    if (counter > 100)
+      break;
+    counter++;
+  }
+}
+Component_ptr GUIEngine::get_by_id(std::string id) {
   for (auto& c : components) {
     if (c->get_id() == id) {
       return c;
+    }
+  }
+  for (auto& sp : sprites) {
+    if (sp->get_id() == id) {
+      return sp;
     }
   }
   return nullptr;
@@ -68,6 +86,8 @@ void GUIEngine::game_draw() {
   SDL_RenderClear(renderer);
   for (auto component : components)
     component->draw();
+  for (auto sp : sprites)
+    sp->draw();
   SDL_SetRenderDrawColor(renderer, 9, 13, 19, 255);
   SDL_RenderPresent(renderer);
 }
@@ -118,20 +138,19 @@ void GUIEngine::handle_creation_queue() {
   }
   creation_queue.clear();
 }
-bool GUIEngine::is_colliding(const Sprite& moving_object) {
-  for (auto& c : components) {
-    if (c->get_id() == moving_object.get_id())
+bool GUIEngine::is_colliding(const Sprite& moving_object) const {
+  for (auto& sp : sprites) {
+    if (sp->get_id() == moving_object.get_id())
       continue;
-    if (auto sprite = std::dynamic_pointer_cast<Sprite>(c)) {
-      if (sprite->get_collisionable() && sprite->is_colliding(moving_object))
-        return true;
+    if (sp->is_colliding(moving_object)) {
+      return true;
     }
   }
   return false;
 }
 void GUIEngine::track_targets() {
-  for (auto& c : components) {
-    if (auto interactable = std::dynamic_pointer_cast<Interactable>(c)) {
+  for (auto& sp : sprites) {
+    if (auto interactable = std::dynamic_pointer_cast<Interactable>(sp)) {
       if (interactable->track_target_safe())
         interactable->do_track_target();
     }

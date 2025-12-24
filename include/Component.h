@@ -7,7 +7,7 @@
 namespace gui {
 
 class Component {
-  typedef std::shared_ptr<Component> component_ptr;
+  typedef std::shared_ptr<Component> Component_ptr;
 
 public:
   virtual ~Component() {}
@@ -16,11 +16,7 @@ public:
   const SDL_FRect& get_rect() const { return rect; }
   const std::string get_id() const { return id; };
 
-  void move(int x, int y);
   void set_coordinates(int x, int y);
-  void border_detection();
-
-  bool is_colliding(const Component& other);
 
   virtual void on_mouse_down(const SDL_Event& event) {}
   virtual void on_mouse_up(const SDL_Event& event) {}
