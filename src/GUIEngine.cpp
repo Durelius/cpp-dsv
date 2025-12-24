@@ -39,18 +39,21 @@ void GUIEngine::add_component(component_ptr c) {
     }
   }
   this->queue_for_add([this, c]() {
-    if (auto sprite = std::dynamic_pointer_cast<Sprite>(c)) {
-      int counter = 0;
-      while (sprite->get_non_colliding_spawn_point() &&
-             eng.is_colliding(*sprite)) {
-        sprite->set_coordinates(sprite->get_rect().x + 5,
-                                sprite->get_rect().y + 5);
-        if (counter > 100)
-          break;
-      }
-    }
+    prevent_spawn_collision(c);
     components.push_back(c);
   });
+}
+void GUIEngine::prevent_spawn_collision(component_ptr c) {
+  if (auto sprite = std::dynamic_pointer_cast<Sprite>(c)) {
+    int counter = 0;
+    while (sprite->get_non_colliding_spawn_point() && is_colliding(*sprite)) {
+      sprite->set_coordinates(sprite->get_rect().x + 5,
+                              sprite->get_rect().y + 5);
+      if (counter > 100)
+        break;
+      counter++;
+    }
+  }
 }
 component_ptr GUIEngine::get_by_id(std::string id) {
   for (auto& c : components) {

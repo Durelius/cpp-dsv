@@ -32,9 +32,14 @@ public:
   void game_events();
   void game_run();
   void lock_frame_rate(time_point start);
+
+  // Queues a task to be done on a frame, which prevents memory leaks
   void queue_for_add(std::function<void()> task) {
     creation_queue.push_back(std::move(task));
   }
+
+  void prevent_spawn_collision(component_ptr c);
+
   bool is_colliding(const Sprite& moving_object);
 
   component_ptr get_by_id(std::string id);
