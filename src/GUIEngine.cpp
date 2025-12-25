@@ -4,7 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <ostream>
-
+#include <random>
 namespace cnts = constants;
 namespace gui {
 
@@ -62,9 +62,28 @@ void GUIEngine::add_sprite(Sprite_ptr sp) {
 void GUIEngine::prevent_spawn_collision(Sprite_ptr sp) {
   int counter = 0;
   while (sp->get_non_colliding_spawn_point() && is_colliding(*sp)) {
-    sp->set_coordinates(sp->get_rect().x + 5, sp->get_rect().y + 5);
-    if (counter > 100)
-      break;
+
+    int window_width;
+    int window_height;
+
+    SDL_GetWindowSize(eng.get_window(), &window_width, &window_height);
+    std::random_device ran;
+    std::mt19937 rng(ran());
+
+    std::uniform_int_distribution<std::mt19937::result_type> rand_x(
+        0, window_width); // distribution in range [1, 6]
+
+    std::uniform_int_distribution<std::mt19937::result_type> rand_y(
+        0, window_height); // distribution in range [1, 6]
+
+    sp->set_coordinates(rand_x(rng), rand_y(rng));
+    if (counter > 100) {
+      std::cerr << "Sprite with id: " << sp->get_id()
+                << "couldn't be spawned because of "
+                   "coordinate clash"
+                << std::endl;
+      throw std::exception();
+    }
     counter++;
   }
 }

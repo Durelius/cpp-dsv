@@ -66,8 +66,8 @@ void Sprite::border_detection() {
 bool Sprite::is_colliding(const Sprite& other) const {
   if (!can_collide() || !other.can_collide())
     return false;
-  int x = this->get_rect().x;
   int y = this->get_rect().y;
+  int x = this->get_rect().x;
   int w = this->get_rect().w;
   int h = this->get_rect().h;
 
