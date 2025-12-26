@@ -1,6 +1,5 @@
 #include "Player.h"
 #include "GUIEngine.h"
-#include <iostream>
 namespace gui {
 typedef std::shared_ptr<Player> player_pointer;
 
