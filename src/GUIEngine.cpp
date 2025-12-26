@@ -1,9 +1,9 @@
 #include "GUIEngine.h"
 #include "Constants.h"
 #include <iostream>
-#include <memory>
 #include <ostream>
 #include <random.h>
+
 namespace cnts = constants;
 namespace gui {
 
@@ -57,6 +57,25 @@ void GUIEngine::add_sprite(Sprite_ptr sp) {
     sprites.push_back(sp);
   });
 }
+void GUIEngine::add_projectile(Projectile_ptr pr) {
+  if (!pr) {
+    std::cerr << "Tried to add null component" << std::endl;
+    throw std::invalid_argument("Tried to add null component");
+  }
+
+  for (auto projectile : projectiles) {
+    // std::cout << component->get_id() << std::endl;
+    if (pr->get_id() == projectile->get_id()) {
+      std::cerr << "ID already exists" << std::endl;
+      throw std::invalid_argument("ID already exists");
+    }
+  }
+  this->queue_for_add([this, pr]() {
+    prevent_spawn_collision(pr);
+    projectiles.push_back(pr);
+  });
+}
+
 // attemps 100 spawn locations incrementing both X and Y by 5, until we give up
 void GUIEngine::prevent_spawn_collision(Sprite_ptr sp) {
   int counter = 0;
@@ -101,6 +120,15 @@ Sprite_ptr GUIEngine::get_sprite_by_id(std::string id) {
   }
   return nullptr;
 }
+Projectile_ptr GUIEngine::get_projectile_by_id(std::string id) {
+  for (auto& pr : projectiles) {
+
+    if (pr->get_id() == id) {
+      return pr;
+    }
+  }
+  return nullptr;
+}
 
 void GUIEngine::game_draw() {
   SDL_RenderClear(renderer);
@@ -108,6 +136,8 @@ void GUIEngine::game_draw() {
     component->draw();
   for (auto sp : sprites)
     sp->draw();
+  for (auto pr : projectiles)
+    pr->draw();
   SDL_SetRenderDrawColor(renderer, 9, 13, 19, 255);
   SDL_RenderPresent(renderer);
 }
@@ -150,6 +180,12 @@ void GUIEngine::game_run() {
     handle_creation_queue();
     track_targets();
     lock_frame_rate(start);
+    for (auto pr : projectile_deletion_queue) {
+      std::cout << "deletion" << std::endl;
+      std::cout << pr->get_id() << std::endl;
+      delete_projectile(pr->get_id());
+    }
+    projectile_deletion_queue.clear();
   }
 }
 void GUIEngine::handle_creation_queue() {
@@ -170,10 +206,13 @@ bool GUIEngine::is_colliding(const Sprite& moving_object) const {
 }
 void GUIEngine::track_targets() {
   for (auto& sp : sprites) {
-    if (auto interactable = std::dynamic_pointer_cast<Interactable>(sp)) {
-      if (interactable->track_target_safe())
-        interactable->do_track_target();
-    }
+    if (sp->track_target_safe())
+      sp->do_track_target();
+  }
+
+  for (auto& pr : projectiles) {
+    if (pr->track_target_safe())
+      pr->do_track_target();
   }
 }
 

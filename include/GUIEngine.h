@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Player.h"
+#include "projectile.h"
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <chrono>
@@ -8,12 +9,13 @@
 #include <interactable.h>
 #include <memory>
 #include <vector>
-
 namespace gui {
 class Component;
 
 typedef std::shared_ptr<Component> Component_ptr;
 typedef std::shared_ptr<Sprite> Sprite_ptr;
+typedef std::shared_ptr<Player> Player_ptr;
+typedef std::shared_ptr<Projectile> Projectile_ptr;
 typedef std::chrono::steady_clock::time_point time_point;
 typedef std::chrono::steady_clock steady_clock;
 typedef std::chrono::duration<double> duration;
@@ -30,14 +32,29 @@ public:
   // void set_test_sprite(std::shared_ptr<Sprite> s) { test_sprite = s; }
   void add_component(Component_ptr c);
   void add_sprite(Sprite_ptr c);
+
+  void add_projectile(Projectile_ptr pr);
   void game_draw();
   void game_events();
   void game_run();
   void lock_frame_rate(time_point start);
-
+  void queue_projectile_for_deletion(Projectile_ptr proj) {
+    projectile_deletion_queue.push_back(proj);
+  }
   // Queues a task to be done on a frame, which prevents memory leaks
   void queue_for_add(std::function<void()> task) {
     creation_queue.push_back(std::move(task));
+  }
+
+  void delete_projectile(std::string id) {
+
+    for (auto it = projectiles.begin(); it != projectiles.end();) {
+      if (it->get()->get_id() == id) {
+        it = projectiles.erase(it);
+      } else {
+        ++it;
+      }
+    }
   }
 
   void prevent_spawn_collision(Sprite_ptr sp);
@@ -47,6 +64,7 @@ public:
   Component_ptr get_by_id(std::string id);
 
   Sprite_ptr get_sprite_by_id(std::string id);
+  Projectile_ptr get_projectile_by_id(std::string id);
 
 private:
   SDL_Window* window;
@@ -54,9 +72,10 @@ private:
   TTF_Font* font;
   std::vector<Component_ptr> components;
   std::vector<Sprite_ptr> sprites;
-  std::shared_ptr<Player> player;
+  std::vector<Projectile_ptr> projectiles;
+  Player_ptr player;
   std::vector<std::function<void()>> creation_queue;
-
+  std::vector<Projectile_ptr> projectile_deletion_queue;
   void track_targets();
   void handle_creation_queue();
 

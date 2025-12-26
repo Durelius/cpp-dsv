@@ -15,12 +15,6 @@ public:
   static Interactable_ptr make(float x, float y, float w, float h,
                                std::string path_to_image, std::string id,
                                bool non_colliding_spawn_point);
-  void do_track_target();
-  void set_track_target(Sprite_ptr other) {
-    track_target = other;
-    has_track_target = true;
-  };
-  bool track_target_safe() { return has_track_target; }
   void draw() const;
   const int get_health() const { return *this->health; }
   const int get_points_on_death() const { return *this->points_on_death; }
@@ -47,8 +41,6 @@ protected:
 private:
   std::unique_ptr<int> health;
   std::unique_ptr<int> points_on_death;
-  Sprite_ptr track_target;
-  bool has_track_target = false;
   bool has_health = false;
   bool has_points_on_death = false;
 };

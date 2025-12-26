@@ -1,7 +1,8 @@
 #include "Sprite.h"
 #include "Component.h"
 #include "GUIEngine.h"
-
+#include <cmath>
+#include <memory>
 namespace gui {
 typedef std::shared_ptr<Sprite> sprite_pointer;
 
@@ -32,37 +33,71 @@ void Sprite::draw() const {
 // finns säkert ett bättre sätt att göra detta på, snabb fix! i och med att vi
 // hämtar get_rect så många gånger..
 void Sprite::move(int paramX, int paramY) {
-  int initialX = this->get_rect().x;
-  int initialY = this->get_rect().y;
+  int initialX = get_rect().x;
+  int initialY = get_rect().y;
   set_coordinates(initialX + paramX, initialY + paramY);
-  border_detection();
+
+  if (border_detection() && std::dynamic_pointer_cast<Projectile>(
+                                eng.get_projectile_by_id(this->get_id()))) {
+    auto pr = eng.get_projectile_by_id(get_id());
+    eng.queue_projectile_for_deletion(pr);
+    return;
+  }
+
   if (eng.is_colliding(*this))
     set_coordinates(initialX, initialY);
 }
 
-void Sprite::border_detection() {
+bool Sprite::border_detection() {
+  bool outside_bounds = false;
+  int x = get_rect().x;
+  int y = get_rect().y;
+  int w = get_rect().w;
+  int h = get_rect().h;
 
-  int x = this->get_rect().x;
-  int y = this->get_rect().y;
-  int w = this->get_rect().w;
-  int h = this->get_rect().h;
-
-  if (x < 0)
+  if (x < 0) {
+    outside_bounds = true;
     x = 0;
-  if (y < 0)
+  }
+  if (y < 0) {
+    outside_bounds = true;
     y = 0;
+  }
 
   int window_width;
   int window_height;
 
   SDL_GetWindowSize(eng.get_window(), &window_width, &window_height);
-  if (x > window_width - w)
+  if (x > window_width - w) {
+    outside_bounds = true;
     x = window_width - w;
-  if (y > window_height - h)
+  }
+  if (y > window_height - h) {
+    outside_bounds = true;
     y = window_height - h;
+  }
 
   set_coordinates(x, y);
+  return outside_bounds;
 }
+
+void Sprite::move_towards_target(int target_x, int target_y) {
+
+  float delta_x = get_rect().x - target_x;
+  float delta_y = get_rect().y - target_y;
+
+  float vector = sqrt(pow(delta_x, 2) + pow(delta_y, 2));
+  float vector_x = delta_x / vector;
+  float vector_y = delta_y / vector;
+
+  int movement_x = 5 * vector_x;
+  int movement_y = 5 * vector_y;
+
+  // För nån anledning blev matten omvänd så jag skickar in det
+  // negativa värdet för jag orkar inte ta reda på varför...
+  move(-movement_x, -movement_y);
+}
+
 bool Sprite::is_colliding(const Sprite& other) const {
   if (!can_collide() || !other.can_collide())
     return false;
@@ -98,6 +133,11 @@ bool Sprite::is_overlapping(const Sprite& other) const {
   return true;
 }
 
+void Sprite::do_track_target() {
+  if (is_overlapping(*track_target))
+    return;
+  move_towards_target(track_target->get_rect().x, track_target->get_rect().y);
+}
 void Sprite::set_velocity(float v) { velocity = v; }
 
 } // namespace gui
