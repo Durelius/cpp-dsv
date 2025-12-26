@@ -4,7 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <ostream>
-#include <random>
+#include <random.h>
 namespace cnts = constants;
 namespace gui {
 
@@ -67,16 +67,9 @@ void GUIEngine::prevent_spawn_collision(Sprite_ptr sp) {
     int window_height;
 
     SDL_GetWindowSize(eng.get_window(), &window_width, &window_height);
-    std::random_device ran;
-    std::mt19937 rng(ran());
-
-    std::uniform_int_distribution<std::mt19937::result_type> rand_x(
-        0, window_width); // distribution in range [1, 6]
-
-    std::uniform_int_distribution<std::mt19937::result_type> rand_y(
-        0, window_height); // distribution in range [1, 6]
-
-    sp->set_coordinates(rand_x(rng), rand_y(rng));
+    int random_x = Random::number_between(0, window_width);
+    int random_y = Random::number_between(0, window_height);
+    sp->set_coordinates(random_x, random_y);
     if (counter > 100) {
       std::cerr << "Sprite with id: " << sp->get_id()
                 << "couldn't be spawned because of "

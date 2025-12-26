@@ -25,6 +25,7 @@ public:
   void border_detection();
 
   bool is_colliding(const Sprite& other) const;
+  bool is_overlapping(const Sprite& other) const;
 
   ~Sprite() { SDL_DestroyTexture(sprite_image); }
 
