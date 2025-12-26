@@ -46,6 +46,8 @@ public:
 
   Component_ptr get_by_id(std::string id);
 
+  Sprite_ptr get_sprite_by_id(std::string id);
+
 private:
   SDL_Window* window;
   SDL_Renderer* renderer;

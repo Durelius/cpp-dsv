@@ -94,6 +94,15 @@ Component_ptr GUIEngine::get_by_id(std::string id) {
   return nullptr;
 }
 
+Sprite_ptr GUIEngine::get_sprite_by_id(std::string id) {
+  for (auto& sp : sprites) {
+    if (sp->get_id() == id) {
+      return sp;
+    }
+  }
+  return nullptr;
+}
+
 void GUIEngine::game_draw() {
   SDL_RenderClear(renderer);
   for (auto component : components)
