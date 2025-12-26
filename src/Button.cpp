@@ -3,9 +3,10 @@
 
 namespace gui {
 button_ptr Button::make(float x, float y, float w, float h, std::string text,
-                        Action action, std::string id) {
-  id = "btn_" + id;
-  auto button_pointer = button_ptr(new Button(x, y, w, h, text, action, id));
+                        Action action, std::string base_id) {
+  std::string spec_id = "bt_" + base_id;
+  auto button_pointer =
+      button_ptr(new Button(x, y, w, h, text, action, spec_id));
 
   eng.add_component(button_pointer);
 

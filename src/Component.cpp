@@ -1,7 +1,7 @@
 #include "Component.h"
 #include "GUIEngine.h"
 #include <iostream>
-
+#include <typeinfo>
 namespace gui {
 Component::Component(float x, float y, float w, float h, std::string id)
     : rect(x, y, w, h), id(id) {}

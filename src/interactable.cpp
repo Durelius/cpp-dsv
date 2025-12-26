@@ -10,12 +10,14 @@ Interactable::Interactable(float x, float y, float w, float h,
     : Sprite(x, y, w, h, path_to_image, id) {}
 
 Interactable_ptr Interactable::make(float x, float y, float w, float h,
-                                    std::string path_to_image, std::string id,
+                                    std::string path_to_image,
+                                    std::string base_id,
                                     bool non_colliding_spawn_point) {
-  id = "inter_" + id;
-  auto ip = Interactable_ptr(new Interactable(x, y, w, h, path_to_image, id));
-  eng.add_sprite(ip);
 
+  std::string spec_id = "in_" + base_id;
+  auto ip =
+      Interactable_ptr(new Interactable(x, y, w, h, path_to_image, spec_id));
+  eng.add_sprite(ip);
   return ip;
 }
 

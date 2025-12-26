@@ -1,6 +1,5 @@
 #include "GUIEngine.h"
 #include "Constants.h"
-#include "Player.h"
 #include <iostream>
 #include <memory>
 #include <ostream>

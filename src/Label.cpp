@@ -6,10 +6,10 @@
 namespace gui {
 
 label_ptr Label::make(float x, float y, float w, float h, std::string text,
-                      std::string id) {
-  id = "lbl_" + id;
+                      std::string base_id) {
+  std::string spec_id = "lb_" + base_id;
 
-  return label_ptr(new Label(x, y, w, h, text, id));
+  return label_ptr(new Label(x, y, w, h, text, spec_id));
 }
 
 Label::Label(float x, float y, float w, float h, std::string text,

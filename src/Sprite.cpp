@@ -13,10 +13,11 @@ Sprite::Sprite(float x, float y, float w, float h, std::string path_to_image,
 }
 
 sprite_pointer Sprite::make(float x, float y, float w, float h,
-                            std::string path_to_image, std::string id,
+                            std::string path_to_image, std::string base_id,
                             bool non_colliding_spawn_point) {
-  id = "sp_" + id;
-  auto sp = sprite_pointer(new Sprite(x, y, w, h, path_to_image, id));
+  std::string spec_id = "sp_" + base_id;
+
+  auto sp = sprite_pointer(new Sprite(x, y, w, h, path_to_image, spec_id));
 
   eng.add_sprite(sp);
   sp->non_colliding_spawn_point = non_colliding_spawn_point;

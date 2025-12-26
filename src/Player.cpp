@@ -10,11 +10,11 @@ Player::Player(float x, float y, float w, float h, std::string path_to_image,
 }
 
 player_pointer Player::make(float x, float y, float w, float h,
-                            std::string path_to_image, std::string id) {
+                            std::string path_to_image,
+                            std::string base_id = "player") {
+  std::string spec_id = "pl_" + base_id;
   auto pp =
-      player_pointer(new Player(x, y, w, h, path_to_image, id = "player"));
-  if (id != "player")
-    id = "player_" + id;
+      player_pointer(new Player(x, y, w, h, path_to_image, spec_id = "player"));
   eng.add_sprite(pp);
   eng.set_player(pp);
   return pp;
