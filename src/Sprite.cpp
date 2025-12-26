@@ -1,7 +1,6 @@
 #include "Sprite.h"
 #include "Component.h"
 #include "GUIEngine.h"
-#include <iostream>
 
 namespace gui {
 typedef std::shared_ptr<Sprite> sprite_pointer;

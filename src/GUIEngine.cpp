@@ -171,11 +171,11 @@ void GUIEngine::track_targets() {
 
 void GUIEngine::lock_frame_rate(time_point start) {
   auto end = steady_clock::now();
-  duration d = end - start;
+  duration dur = end - start;
   constexpr auto min_frame = duration(1.0 / 60.0);
-  if (d < min_frame) {
+  if (dur < min_frame) {
     auto delay =
-        std::chrono::duration_cast<std::chrono::milliseconds>(min_frame - d);
+        std::chrono::duration_cast<std::chrono::milliseconds>(min_frame - dur);
     SDL_Delay(static_cast<Uint32>(delay.count()));
   }
 }
