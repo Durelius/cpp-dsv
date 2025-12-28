@@ -1,28 +1,72 @@
 #include "projectile.h"
 #include "GUIEngine.h"
 #include "Sprite.h"
+#include <cmath>
 #include <iostream>
 namespace gui {
 typedef std::shared_ptr<Projectile> Projectile_ptr;
-Projectile::Projectile(float h, float w, std::string path_to_image,
-                       std::string spec_id, Sprite_ptr from, Sprite_ptr to)
-    : Sprite(0, 0, w, h, path_to_image, spec_id) {
-  target_x = to->get_rect().x;
-  target_y = to->get_rect().y;
+Projectile::Projectile(int x, int y, float h, float w,
+                       std::string path_to_image, std::string spec_id,
+                       int damage)
+    : Sprite(x, y, w, h, path_to_image, spec_id) {
+  // y = kx+  m;
 }
-
+// uses power of math to find out where the final destination should be of the
+// projectile, and removes itself when it reaches that point, collides with
+// another collisionable or gets out of bounds
 Projectile::~Projectile() {};
 Projectile_ptr Projectile::make(float h, float w, std::string path_to_image,
                                 std::string base_id, Sprite_ptr from,
-                                Sprite_ptr to) {
+                                Sprite_ptr to, int damage) {
   std::string spec_id = "pr_" + base_id;
-  auto proj_ptr =
-      Projectile_ptr(new Projectile(h, w, path_to_image, spec_id, from, to));
+
+  float from_x = from->get_rect().x;
+  float target_x = to->get_rect().x;
+  float from_y = from->get_rect().y;
+  float target_y = to->get_rect().y;
+  float target_h = to->get_rect().h;
+  float target_w = to->get_rect().w;
+  auto proj_ptr = Projectile_ptr(
+      new Projectile(from_x, from_y, h, w, path_to_image, spec_id, damage));
   proj_ptr->set_track_target(to);
+  proj_ptr->set_spawn_sprite(from);
+
+  float delta_x = target_x - from_x;
+  float delta_y = target_y - from_y;
+  float length = std::sqrt(std::pow(delta_x, 2) + std::pow(delta_y, 2));
+  delta_x = delta_x / length;
+  delta_y = delta_y / length;
+
+  while (!eng.coordinate_border_detection(target_x, target_y, target_w,
+                                          target_h)) {
+    target_x += delta_x;
+    target_y += delta_y;
+  }
+  proj_ptr->set_target_x(target_x);
+  proj_ptr->set_target_y(target_y);
+  proj_ptr->set_target_w(target_w);
+  proj_ptr->set_target_h(target_h);
+  proj_ptr->set_damage(damage);
   eng.add_projectile(proj_ptr);
   return proj_ptr;
 }
 
-void Projectile::do_track_target() { move_towards_target(target_x, target_y); }
+void Projectile::do_track_target() {
+
+  Projectile_ptr pr_ptr = eng.get_projectile_by_id(get_id());
+  auto target = get_track_target();
+  if (is_colliding(*target)) {
+    target->take_damage(damage);
+    eng.queue_projectile_for_deletion(pr_ptr);
+    return;
+  }
+  if (border_detection() ||
+      reached_coordinates(target_x, target_y, target_w, target_h)) {
+    eng.queue_projectile_for_deletion(pr_ptr);
+    return;
+  }
+
+  move_towards_target(target_x, target_y);
+}
 void Projectile::draw() const { Sprite::draw(); }
 } // namespace gui

@@ -9,9 +9,9 @@ class Sprite : public Component {
   typedef std::shared_ptr<Sprite> Sprite_ptr;
 
 public:
-  static Sprite_ptr make(float x, float y, float w, float h,
-                         std::string path_to_image, std::string id,
-                         bool non_colliding_spawn_point);
+  // static Sprite_ptr make(float x, float y, float w, float h,
+  //                        std::string path_to_image, std::string id,
+  //                        bool non_colliding_spawn_point);
   const int get_velocity() { return velocity; }
   const bool can_collide() const { return this->collisionable; }
   const bool get_non_colliding_spawn_point() const {
@@ -23,8 +23,10 @@ public:
     track_target = other;
     has_track_target = true;
   };
-  bool track_target_safe() { return has_track_target; }
+  const Sprite_ptr get_track_target() { return track_target; }
+  const bool track_target_safe() { return has_track_target; }
   void draw() const;
+  virtual bool take_damage(int damage) = 0;
   void set_can_collide(bool col) { this->collisionable = col; }
   void set_velocity(float v);
   void move(int x, int y);
@@ -32,6 +34,8 @@ public:
   void move_towards_target(int target_x, int target_y);
   bool is_colliding(const Sprite& other) const;
   bool is_overlapping(const Sprite& other) const;
+
+  bool reached_coordinates(int x, int y, int w, int h) const;
   ~Sprite() { SDL_DestroyTexture(sprite_image); }
 
 protected:

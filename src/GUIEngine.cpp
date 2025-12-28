@@ -1,8 +1,8 @@
 #include "GUIEngine.h"
 #include "Constants.h"
+#include "random.h"
 #include <iostream>
 #include <ostream>
-#include <random.h>
 
 namespace cnts = constants;
 namespace gui {
@@ -30,14 +30,16 @@ void GUIEngine::add_component(Component_ptr c) {
     throw std::invalid_argument("Tried to add null component");
   }
 
-  for (auto component : components) {
-    // std::cout << component->get_id() << std::endl;
-    if (c->get_id() == component->get_id()) {
-      std::cerr << "ID already exists" << std::endl;
-      throw std::invalid_argument("ID already exists");
+  this->queue_for_add([this, c]() {
+    for (auto component : components) {
+      // std::cout << component->get_id() << std::endl;
+      if (c->get_id() == component->get_id()) {
+        std::cerr << "ID already exists: " << c->get_id() << std::endl;
+        throw std::invalid_argument("ID already exists");
+      }
     }
-  }
-  this->queue_for_add([this, c]() { components.push_back(c); });
+    components.push_back(c);
+  });
 }
 void GUIEngine::add_sprite(Sprite_ptr sp) {
   if (!sp) {
@@ -45,14 +47,14 @@ void GUIEngine::add_sprite(Sprite_ptr sp) {
     throw std::invalid_argument("Tried to add null component");
   }
 
-  for (auto sprite : sprites) {
-    // std::cout << component->get_id() << std::endl;
-    if (sp->get_id() == sprite->get_id()) {
-      std::cerr << "ID already exists" << std::endl;
-      throw std::invalid_argument("ID already exists");
-    }
-  }
   this->queue_for_add([this, sp]() {
+    for (auto sprite : sprites) {
+      // std::cout << component->get_id() << std::endl;
+      if (sp->get_id() == sprite->get_id()) {
+        std::cerr << "ID already exists" << std::endl;
+        throw std::invalid_argument("ID already exists");
+      }
+    }
     prevent_spawn_collision(sp);
     sprites.push_back(sp);
   });
@@ -63,14 +65,14 @@ void GUIEngine::add_projectile(Projectile_ptr pr) {
     throw std::invalid_argument("Tried to add null component");
   }
 
-  for (auto projectile : projectiles) {
-    // std::cout << component->get_id() << std::endl;
-    if (pr->get_id() == projectile->get_id()) {
-      std::cerr << "ID already exists" << std::endl;
-      throw std::invalid_argument("ID already exists");
-    }
-  }
   this->queue_for_add([this, pr]() {
+    for (auto projectile : projectiles) {
+      // std::cout << component->get_id() << std::endl;
+      if (pr->get_id() == projectile->get_id()) {
+        std::cerr << "ID already exists" << std::endl;
+        throw std::invalid_argument("ID already exists");
+      }
+    }
     prevent_spawn_collision(pr);
     projectiles.push_back(pr);
   });
@@ -93,7 +95,8 @@ void GUIEngine::prevent_spawn_collision(Sprite_ptr sp) {
                 << "couldn't be spawned because of "
                    "coordinate clash"
                 << std::endl;
-      throw std::exception();
+      queue_sprite_for_deletion(sp);
+      return;
     }
     counter++;
   }
@@ -177,15 +180,72 @@ void GUIEngine::game_run() {
     game_events();
     player->player_update();
     game_draw();
-    handle_creation_queue();
     track_targets();
+    delete_scheduled();
+    handle_creation_queue();
+    display_player_health();
     lock_frame_rate(start);
-    for (auto pr : projectile_deletion_queue) {
-      std::cout << "deletion" << std::endl;
-      std::cout << pr->get_id() << std::endl;
-      delete_projectile(pr->get_id());
+  }
+}
+void GUIEngine::set_display_player_health(int x, int y, int w, int h) {
+  player_hp_sign_safe = true;
+
+  auto player_hp_sign_1 = Sign::make(x, y, w, h, constants::sign_0, "hp_1");
+  player_hp_signs.push_back(player_hp_sign_1);
+}
+void GUIEngine::display_player_health() {
+  if (!player_hp_sign_safe)
+    return;
+  auto health_str = std::format("{}", player->get_health());
+  if (player->get_health() < 0)
+    health_str = "0";
+  if (health_str.length() == player_hp_signs.size()) {
+    for (size_t i = 0; i < health_str.length(); i++) {
+      player_hp_signs[i]->set_image(get_number_sign_by_char(health_str[i]));
     }
-    projectile_deletion_queue.clear();
+    return;
+  }
+  int x = player_hp_signs[0]->get_rect().x;
+  int y = player_hp_signs[0]->get_rect().y;
+  int h = player_hp_signs[0]->get_rect().h;
+  int w = player_hp_signs[0]->get_rect().w;
+
+  for (size_t i = 0; i < player_hp_signs.size(); i++) {
+    queue_component_for_deletion(player_hp_signs[i]);
+  }
+  player_hp_signs.clear();
+
+  for (size_t i = 0; i < health_str.length(); i++) {
+    auto sign = Sign::make(x, y, w, h, get_number_sign_by_char(health_str[i]),
+                           std::format("hp_{}", i));
+    x += w;
+    player_hp_signs.push_back(sign);
+  }
+}
+std::string GUIEngine::get_number_sign_by_char(char sign) {
+  switch (sign) {
+  case '0':
+    return constants::sign_0;
+  case '1':
+    return constants::sign_1;
+  case '2':
+    return constants::sign_2;
+  case '3':
+    return constants::sign_3;
+  case '4':
+    return constants::sign_4;
+  case '5':
+    return constants::sign_5;
+  case '6':
+    return constants::sign_6;
+  case '7':
+    return constants::sign_7;
+  case '8':
+    return constants::sign_8;
+  case '9':
+    return constants::sign_9;
+  default:
+    return constants::sign_0;
   }
 }
 void GUIEngine::handle_creation_queue() {
@@ -193,6 +253,28 @@ void GUIEngine::handle_creation_queue() {
     task();
   }
   creation_queue.clear();
+}
+bool GUIEngine::coordinate_border_detection(int x, int y, int w, int h) {
+
+  if (x < 0) {
+    return true;
+  }
+  if (y < 0) {
+    return true;
+  }
+
+  int window_width;
+  int window_height;
+
+  SDL_GetWindowSize(eng.get_window(), &window_width, &window_height);
+  if (x > window_width - w) {
+    return true;
+  }
+  if (y > window_height - h) {
+    return true;
+  }
+
+  return false;
 }
 bool GUIEngine::is_colliding(const Sprite& moving_object) const {
   for (auto& sp : sprites) {
@@ -215,7 +297,53 @@ void GUIEngine::track_targets() {
       pr->do_track_target();
   }
 }
+void GUIEngine::delete_scheduled() {
 
+  for (auto pr : projectile_deletion_queue) {
+    delete_projectile(pr->get_id());
+  }
+  projectile_deletion_queue.clear();
+  for (auto sp : sprite_deletion_queue) {
+    delete_projectile(sp->get_id());
+  }
+  sprite_deletion_queue.clear();
+
+  for (auto co : component_deletion_queue) {
+    delete_component(co->get_id());
+  }
+  component_deletion_queue.clear();
+}
+void GUIEngine::delete_projectile(std::string id) {
+
+  for (auto it = projectiles.begin(); it != projectiles.end();) {
+    if (it->get()->get_id() == id) {
+      it = projectiles.erase(it);
+    } else {
+      ++it;
+    }
+  }
+}
+
+void GUIEngine::delete_component(std::string id) {
+
+  for (auto it = components.begin(); it != components.end();) {
+    if (it->get()->get_id() == id) {
+      it = components.erase(it);
+    } else {
+      ++it;
+    }
+  }
+}
+void GUIEngine::delete_sprite(std::string id) {
+
+  for (auto it = sprites.begin(); it != sprites.end();) {
+    if (it->get()->get_id() == id) {
+      it = sprites.erase(it);
+    } else {
+      ++it;
+    }
+  }
+}
 void GUIEngine::lock_frame_rate(time_point start) {
   auto end = steady_clock::now();
   duration dur = end - start;

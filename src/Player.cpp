@@ -13,11 +13,18 @@ player_pointer Player::make(float x, float y, float w, float h,
                             std::string path_to_image, std::string base_id) {
   std::string spec_id = "pl_" + base_id;
   auto pp = player_pointer(new Player(x, y, w, h, path_to_image, spec_id));
+  pp->set_health(100);
   eng.add_sprite(pp);
   eng.set_player(pp);
   return pp;
 }
 
+bool Player::take_damage(int damage) {
+  set_health(*health - damage);
+  if (*health <= 0)
+    return true;
+  return false;
+}
 void Player::draw() const { Sprite::draw(); }
 
 void Player::player_update() {

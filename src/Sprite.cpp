@@ -13,18 +13,18 @@ Sprite::Sprite(float x, float y, float w, float h, std::string path_to_image,
   sprite_image = IMG_LoadTexture(eng.get_renderer(), path_to_image.c_str());
 }
 
-sprite_pointer Sprite::make(float x, float y, float w, float h,
-                            std::string path_to_image, std::string base_id,
-                            bool non_colliding_spawn_point) {
-  std::string spec_id = "sp_" + base_id;
-
-  auto sp = sprite_pointer(new Sprite(x, y, w, h, path_to_image, spec_id));
-
-  eng.add_sprite(sp);
-  sp->non_colliding_spawn_point = non_colliding_spawn_point;
-
-  return sp;
-}
+// sprite_pointer Sprite::make(float x, float y, float w, float h,
+//                             std::string path_to_image, std::string base_id,
+//                             bool non_colliding_spawn_point) {
+//   std::string spec_id = "sp_" + base_id;
+//
+//   auto sp = sprite_pointer(new Sprite(x, y, w, h, path_to_image, spec_id));
+//
+//   eng.add_sprite(sp);
+//   sp->non_colliding_spawn_point = non_colliding_spawn_point;
+//
+//   return sp;
+// }
 
 void Sprite::draw() const {
   SDL_RenderTexture(eng.get_renderer(), sprite_image, NULL, &get_rect());
@@ -36,13 +36,7 @@ void Sprite::move(int paramX, int paramY) {
   int initialX = get_rect().x;
   int initialY = get_rect().y;
   set_coordinates(initialX + paramX, initialY + paramY);
-
-  if (border_detection() && std::dynamic_pointer_cast<Projectile>(
-                                eng.get_projectile_by_id(this->get_id()))) {
-    auto pr = eng.get_projectile_by_id(get_id());
-    eng.queue_projectile_for_deletion(pr);
-    return;
-  }
+  border_detection();
 
   if (eng.is_colliding(*this))
     set_coordinates(initialX, initialY);
@@ -106,20 +100,29 @@ bool Sprite::is_colliding(const Sprite& other) const {
 }
 bool Sprite::is_overlapping(const Sprite& other) const {
 
-  int y = this->get_rect().y;
-  int x = this->get_rect().x;
-  int w = this->get_rect().w;
-  int h = this->get_rect().h;
+  int y = other.get_rect().y;
+  int x = other.get_rect().x;
+  int w = other.get_rect().w;
+  int h = other.get_rect().h;
+  return reached_coordinates(x, y, w, h);
+}
+bool Sprite::reached_coordinates(int dest_x, int dest_y, int dest_w,
+                                 int dest_h) const {
+
+  int y = get_rect().y;
+  int x = get_rect().x;
+  int w = get_rect().w;
+  int h = get_rect().h;
 
   int this_x_start = x;
   int this_x_end = x + w;
   int this_y_start = y;
   int this_y_end = y + h;
 
-  int other_x_start = other.get_rect().x;
-  int other_x_end = other.get_rect().x + other.get_rect().w;
-  int other_y_start = other.get_rect().y;
-  int other_y_end = other.get_rect().y + other.get_rect().h;
+  int other_x_start = dest_x;
+  int other_x_end = dest_x + dest_w;
+  int other_y_start = dest_y;
+  int other_y_end = dest_y + dest_h;
 
   if (this_y_end < other_y_start)
     return false;

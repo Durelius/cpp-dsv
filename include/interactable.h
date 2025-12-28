@@ -24,8 +24,9 @@ public:
     return this->has_points_on_death;
   }
 
+  bool take_damage(int damage);
   void set_health(int health) {
-    has_points_on_death = health;
+    has_health = true;
 
     this->health = std::make_unique<int>(health);
   }

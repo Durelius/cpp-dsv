@@ -20,6 +20,15 @@ Interactable_ptr Interactable::make(float x, float y, float w, float h,
   return ip;
 }
 
+// returns true if target is DEAD, false if target doesn't have health assigned
+bool Interactable::take_damage(int damage) {
+  if (!has_health)
+    return false;
+  set_health(*health - damage);
+  if (*health <= 0)
+    return true;
+  return false;
+}
 void Interactable::draw() const { Sprite::draw(); }
 
 } // namespace gui
