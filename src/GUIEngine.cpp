@@ -86,11 +86,14 @@ void GUIEngine::prevent_spawn_collision(Sprite_ptr sp) {
 
     int window_width;
     int window_height;
-
+    int x = sp->get_rect().x;
+    int y = sp->get_rect().y;
     SDL_GetWindowSize(eng.get_window(), &window_width, &window_height);
-    int random_x = Random::number_between(0, window_width);
-    int random_y = Random::number_between(0, window_height);
-    sp->set_coordinates(random_x, random_y);
+    if (counter % 2 != 0)
+      y = -counter + y;
+    else
+      y = counter + y;
+    sp->set_coordinates(x, y);
     if (counter > 100) {
       std::cerr << "Sprite with id: " << sp->get_id()
                 << "couldn't be spawned because of "

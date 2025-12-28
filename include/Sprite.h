@@ -23,12 +23,12 @@ public:
   const Sprite_ptr get_track_target() { return track_target; }
   const bool track_target_safe() { return has_track_target; }
   void draw() const;
-  virtual bool take_damage(int damage) = 0;
+  virtual bool take_damage(int damage) { return true; }
+  virtual void update() {}
   void set_can_collide(bool col) { this->collisionable = col; }
   void set_velocity(float v);
   bool move(int x, int y);
   bool border_detection();
-  virtual void update() = 0;
   // frames between proejctile shootings, 0 is no projectiles'
   void set_projectile_cooldown(float cd) { projectile_cooldown = cd * 60; }
   float get_projectile_cooldown() { return projectile_cooldown; }
