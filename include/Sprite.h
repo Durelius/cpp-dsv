@@ -28,7 +28,13 @@ public:
   void set_velocity(float v);
   bool move(int x, int y);
   bool border_detection();
-  void update();
+  virtual void update() = 0;
+  // frames between proejctile shootings, 0 is no projectiles'
+  void set_projectile_cooldown(float cd) { projectile_cooldown = cd * 60; }
+  float get_projectile_cooldown() { return projectile_cooldown; }
+  void set_cooldown_counter() { cooldown_counter = projectile_cooldown; }
+  int get_cooldown_counter() { return cooldown_counter; }
+  void decr_cooldown_counter() { cooldown_counter--; }
   bool move_towards_target(int target_x, int target_y);
   bool is_colliding(const Sprite& other) const;
   bool is_overlapping(const Sprite& other) const;
@@ -45,6 +51,8 @@ private:
   float velocity = 5;
   bool collisionable = true;
 
+  int cooldown_counter = 0;
+  float projectile_cooldown = 0;
   Sprite_ptr track_target;
   bool has_track_target = false;
 };

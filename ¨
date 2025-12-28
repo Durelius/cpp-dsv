@@ -66,8 +66,7 @@ public:
   void prevent_spawn_collision(Sprite_ptr sp);
 
   bool is_colliding(const Sprite& moving_object) const;
-  bool is_colliding_interactable(Sprite_ptr moving_object,
-                                 Interactable_ptr* in) const;
+  bool is_colliding_interactable(Interactable_ptr* in) const;
 
   Component_ptr get_by_id(std::string id);
 

@@ -20,6 +20,19 @@ Interactable_ptr Interactable::make(float x, float y, float w, float h,
   return ip;
 }
 
+// runs once every frame
+void Interactable::update() {
+  decr_cooldown_counter();
+  if (track_target_safe())
+    do_track_target();
+
+  if (get_projectile_cooldown() > 0 && get_cooldown_counter() <= 0) {
+    auto proj = Projectile::make(10, 10, "resources/images/projectile.png",
+                                 "updateshoot", eng.get_sprite_by_id(get_id()),
+                                 eng.get_player(), 10);
+    set_cooldown_counter();
+  }
+}
 // returns true if target is DEAD, false if target doesn't have health assigned
 bool Interactable::take_damage(int damage) {
   if (!has_health)

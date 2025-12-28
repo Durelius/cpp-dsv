@@ -18,13 +18,11 @@ public:
   void draw() const;
   const int get_health() const { return *this->health; }
   const int get_points_on_death() const { return *this->points_on_death; }
-
+  void update();
   const bool get_health_safe() const { return this->has_health; }
   const bool get_points_on_death_safe() const {
     return this->has_points_on_death;
   }
-  // seconds between proejctile shootings, 0 is no projectiles
-  void set_projectile_cooldown(float cd) { projectile_cooldown = cd; }
 
   bool take_damage(int damage);
   void set_health(int health) {
@@ -44,7 +42,6 @@ protected:
 private:
   std::unique_ptr<int> health;
   std::unique_ptr<int> points_on_death;
-  float projectile_cooldown = 0;
   bool has_health = false;
   bool has_points_on_death = false;
 };

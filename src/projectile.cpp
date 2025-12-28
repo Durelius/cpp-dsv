@@ -60,25 +60,52 @@ Projectile_ptr Projectile::make(float h, float w, std::string path_to_image,
       std::format("pr_{}_{}_player:{}", base_id,
                   Random::number_between(0, 50000), player->get_id());
 
-  float from_x = player->get_rect().x;
+  float from_x = player->get_rect().x + player->get_rect().w / 2 - w / 2;
   float from_y = player->get_rect().y;
   auto proj_ptr = Projectile_ptr(
       new Projectile(from_x, from_y, h, w, path_to_image, spec_id, damage));
+  proj_ptr->set_can_collide(false);
   proj_ptr->set_spawn_sprite(player);
   switch (direction) {
   case UP:
     proj_ptr->set_target_y(0);
     proj_ptr->set_target_x(from_x);
+    break;
+  default:
+    std::cout << "other directions than up are not implemented yet"
+              << std::endl;
+    break;
   }
   proj_ptr->set_damage(damage);
   eng.add_projectile(proj_ptr);
   return proj_ptr;
 }
 void Projectile::update() {
-  if (track_target_safe())
+
+  if (track_target_safe()) {
     do_track_target();
-  else
-    move_towards_target(target_x, target_y);
+    return;
+  }
+  auto proj_ptr = eng.get_projectile_by_id(get_id());
+  if (border_detection() ||
+      reached_coordinates(target_x, target_y, target_w, target_h)) {
+    eng.queue_projectile_for_deletion(proj_ptr);
+    return;
+  }
+
+  if (!move_towards_target(target_x, target_y)) {
+    eng.queue_projectile_for_deletion(proj_ptr);
+    return;
+  }
+
+  Interactable_ptr* out = nullptr;
+  if (eng.is_colliding_interactable(proj_ptr, out)) {
+    Interactable_ptr in = *out;
+    in->take_damage(damage);
+
+    eng.queue_projectile_for_deletion(proj_ptr);
+    return;
+  }
 }
 void Projectile::do_track_target() {
 

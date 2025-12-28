@@ -2,6 +2,7 @@
 #include "GUIEngine.h"
 #include "projectile.h"
 #include <SDL3/SDL_scancode.h>
+#include <iostream>
 namespace gui {
 typedef std::shared_ptr<Player> player_pointer;
 
@@ -29,8 +30,7 @@ bool Player::take_damage(int damage) {
 }
 void Player::draw() const { Sprite::draw(); }
 
-void Player::player_update() {
-
+void Player::update() {
   if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP])
     move(0, -get_velocity());
   if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN])
@@ -39,9 +39,16 @@ void Player::player_update() {
     move(-get_velocity(), 0);
   if (keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT])
     move(get_velocity(), 0);
-  if (keystate[SDL_SCANCODE_SPACE])
-    Projectile::make(10, 10, "resources/images/projectile.png", "shoot",
-                     eng.get_player(), 10, Projectile::UP);
+  if (keystate[SDL_SCANCODE_SPACE]) {
+
+    decr_cooldown_counter();
+    if (get_projectile_cooldown() > 0 && get_cooldown_counter() <= 0) {
+      auto proj =
+          Projectile::make(10, 10, "resources/images/projectile.png",
+                           "updateshoot", eng.get_player(), 10, Projectile::UP);
+      set_cooldown_counter();
+    }
+  }
 }
 
 } // namespace gui

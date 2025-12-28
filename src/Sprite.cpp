@@ -29,11 +29,6 @@ Sprite::Sprite(float x, float y, float w, float h, std::string path_to_image,
 void Sprite::draw() const {
   SDL_RenderTexture(eng.get_renderer(), sprite_image, NULL, &get_rect());
 }
-// runs once every frame
-void Sprite::update() {
-  if (track_target_safe())
-    do_track_target();
-}
 // returns false if we move back the sprite
 // finns säkert ett bättre sätt att göra detta på, snabb fix! i och med att vi
 // hämtar get_rect så många gånger..

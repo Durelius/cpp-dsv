@@ -1,8 +1,9 @@
 #include "GUIEngine.h"
 #include "Constants.h"
+#include "interactable.h"
 #include "random.h"
 #include <iostream>
-#include <ostream>
+#include <memory>
 
 namespace cnts = constants;
 namespace gui {
@@ -178,7 +179,7 @@ void GUIEngine::game_run() {
   while (running) {
     auto start = steady_clock::now();
     game_events();
-    player->player_update();
+    player->update();
     update_sprites();
     update_projectiles();
     game_draw();
@@ -283,6 +284,21 @@ bool GUIEngine::is_colliding(const Sprite& moving_object) const {
       continue;
     if (sp->is_colliding(moving_object)) {
       return true;
+    }
+  }
+  return false;
+}
+bool GUIEngine::is_colliding_interactable(Sprite_ptr moving_object,
+                                          Interactable_ptr* out) const {
+
+  for (auto& sp : sprites) {
+    if (sp->get_id().substr(0, 2) == "in") {
+      auto in = std::dynamic_pointer_cast<Interactable>(sp);
+
+      if (in->is_colliding(*moving_object)) {
+        out = &in;
+        return true;
+      }
     }
   }
   return false;

@@ -14,7 +14,7 @@ public:
 
   bool take_damage(int damage);
   void draw() const;
-  void player_update();
+  void update();
 
   const int get_health() const { return *health; }
   void set_health(int health) { this->health = std::make_unique<int>(health); }
