@@ -29,17 +29,25 @@ Sprite::Sprite(float x, float y, float w, float h, std::string path_to_image,
 void Sprite::draw() const {
   SDL_RenderTexture(eng.get_renderer(), sprite_image, NULL, &get_rect());
 }
-
+// runs once every frame
+void Sprite::update() {
+  if (track_target_safe())
+    do_track_target();
+}
+// returns false if we move back the sprite
 // finns säkert ett bättre sätt att göra detta på, snabb fix! i och med att vi
 // hämtar get_rect så många gånger..
-void Sprite::move(int paramX, int paramY) {
+bool Sprite::move(int paramX, int paramY) {
   int initialX = get_rect().x;
   int initialY = get_rect().y;
   set_coordinates(initialX + paramX, initialY + paramY);
   border_detection();
 
-  if (eng.is_colliding(*this))
+  if (eng.is_colliding(*this)) {
+    return false;
     set_coordinates(initialX, initialY);
+  }
+  return true;
 }
 
 bool Sprite::border_detection() {
@@ -74,8 +82,8 @@ bool Sprite::border_detection() {
   set_coordinates(x, y);
   return outside_bounds;
 }
-
-void Sprite::move_towards_target(int target_x, int target_y) {
+// return false if the target was stopped in its tracks
+bool Sprite::move_towards_target(int target_x, int target_y) {
 
   float delta_x = get_rect().x - target_x;
   float delta_y = get_rect().y - target_y;
@@ -84,12 +92,12 @@ void Sprite::move_towards_target(int target_x, int target_y) {
   float vector_x = delta_x / vector;
   float vector_y = delta_y / vector;
 
-  int movement_x = 5 * vector_x;
-  int movement_y = 5 * vector_y;
+  int movement_x = get_velocity() * vector_x;
+  int movement_y = get_velocity() * vector_y;
 
   // För nån anledning blev matten omvänd så jag skickar in det
   // negativa värdet för jag orkar inte ta reda på varför...
-  move(-movement_x, -movement_y);
+  return move(-movement_x, -movement_y);
 }
 
 bool Sprite::is_colliding(const Sprite& other) const {

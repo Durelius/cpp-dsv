@@ -14,9 +14,6 @@ public:
   //                        bool non_colliding_spawn_point);
   const int get_velocity() { return velocity; }
   const bool can_collide() const { return this->collisionable; }
-  const bool get_non_colliding_spawn_point() const {
-    return this->non_colliding_spawn_point;
-  }
 
   void do_track_target();
   void set_track_target(Sprite_ptr other) {
@@ -29,9 +26,10 @@ public:
   virtual bool take_damage(int damage) = 0;
   void set_can_collide(bool col) { this->collisionable = col; }
   void set_velocity(float v);
-  void move(int x, int y);
+  bool move(int x, int y);
   bool border_detection();
-  void move_towards_target(int target_x, int target_y);
+  void update();
+  bool move_towards_target(int target_x, int target_y);
   bool is_colliding(const Sprite& other) const;
   bool is_overlapping(const Sprite& other) const;
 
@@ -44,9 +42,8 @@ protected:
 
 private:
   SDL_Texture* sprite_image;
-  float velocity = 1;
+  float velocity = 5;
   bool collisionable = true;
-  bool non_colliding_spawn_point = true;
 
   Sprite_ptr track_target;
   bool has_track_target = false;

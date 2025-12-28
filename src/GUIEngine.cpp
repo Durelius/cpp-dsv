@@ -81,7 +81,7 @@ void GUIEngine::add_projectile(Projectile_ptr pr) {
 // attemps 100 spawn locations incrementing both X and Y by 5, until we give up
 void GUIEngine::prevent_spawn_collision(Sprite_ptr sp) {
   int counter = 0;
-  while (sp->get_non_colliding_spawn_point() && is_colliding(*sp)) {
+  while (is_colliding(*sp)) {
 
     int window_width;
     int window_height;
@@ -179,8 +179,9 @@ void GUIEngine::game_run() {
     auto start = steady_clock::now();
     game_events();
     player->player_update();
+    update_sprites();
+    update_projectiles();
     game_draw();
-    track_targets();
     delete_scheduled();
     handle_creation_queue();
     display_player_health();
@@ -286,15 +287,15 @@ bool GUIEngine::is_colliding(const Sprite& moving_object) const {
   }
   return false;
 }
-void GUIEngine::track_targets() {
+void GUIEngine::update_sprites() {
   for (auto& sp : sprites) {
-    if (sp->track_target_safe())
-      sp->do_track_target();
+    sp->update();
   }
+}
+void GUIEngine::update_projectiles() {
 
   for (auto& pr : projectiles) {
-    if (pr->track_target_safe())
-      pr->do_track_target();
+    pr->update();
   }
 }
 void GUIEngine::delete_scheduled() {

@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "Player.h"
 #include "Sprite.h"
 #include <SDL3/SDL_video.h>
 #include <string>
@@ -8,13 +9,18 @@ namespace gui {
 
 class Projectile : public Sprite {
   typedef std::shared_ptr<Projectile> Projectile_ptr;
+  typedef std::shared_ptr<Player> Player_ptr;
   typedef std::shared_ptr<Sprite> Sprite_ptr;
 
 public:
   ~Projectile();
+  enum Direction { UP, DOWN, LEFT, RIGHT };
   static Projectile_ptr make(float h, float w, std::string path_to_image,
                              std::string base_id, Sprite_ptr from,
                              Sprite_ptr to, int damage);
+  static Projectile_ptr make(float h, float w, std::string path_to_image,
+                             std::string base_id, Player_ptr player, int damage,
+                             Direction direction);
   void draw() const;
 
   float get_target_x() { return target_x; }
@@ -29,6 +35,7 @@ public:
   Sprite_ptr get_spawn_sprite() { return spawn_sprite; }
   void set_damage(int damage) { this->damage = damage; }
   void do_track_target();
+  void update();
   bool take_damage(int damage) { return true; }
 
 protected:

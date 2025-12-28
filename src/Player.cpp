@@ -1,5 +1,7 @@
 #include "Player.h"
 #include "GUIEngine.h"
+#include "projectile.h"
+#include <SDL3/SDL_scancode.h>
 namespace gui {
 typedef std::shared_ptr<Player> player_pointer;
 
@@ -37,6 +39,9 @@ void Player::player_update() {
     move(-get_velocity(), 0);
   if (keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT])
     move(get_velocity(), 0);
+  if (keystate[SDL_SCANCODE_SPACE])
+    Projectile::make(10, 10, "resources/images/projectile.png", "shoot",
+                     eng.get_player(), 10, Projectile::UP);
 }
 
 } // namespace gui

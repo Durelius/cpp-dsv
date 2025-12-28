@@ -30,7 +30,7 @@ public:
   SDL_Renderer* get_renderer() const { return renderer; }
   TTF_Font* get_font() const { return font; }
   SDL_Window* get_window() const { return window; }
-
+  Player_ptr get_player() const { return player; }
   void set_player(std::shared_ptr<Player> p) { player = p; }
   // void set_test_sprite(std::shared_ptr<Sprite> s) { test_sprite = s; }
   void add_component(Component_ptr c);
@@ -53,11 +53,12 @@ public:
     sprite_deletion_queue.insert(proj);
   }
   void set_display_player_health(int x, int y, int h, int w);
-  // Queues a task to be done on a frame, which prevents memory leaks
+  // Queues a task to be done on a frame, which prevents memory corruption
   void queue_for_add(std::function<void()> task) {
     creation_queue.push_back(std::move(task));
   }
-
+  void update_sprites();
+  void update_projectiles();
   void delete_projectile(std::string id);
   void delete_sprite(std::string id);
   void delete_component(std::string id);
