@@ -60,6 +60,15 @@ void Engine::add_sprite(Sprite_ptr sp) {
   });
 }
 
+UI_Element_ptr Engine::get_ui_element_by_id(std::string id) {
+
+  for (auto& ui_el : ui_elements) {
+    if (ui_el->get_id() == id) {
+      return ui_el;
+    }
+  }
+  return nullptr;
+}
 Sprite_ptr Engine::get_sprite_by_id(std::string id) {
   for (auto& sp : sprites) {
     if (sp->get_id() == id) {
