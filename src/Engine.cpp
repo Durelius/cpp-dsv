@@ -135,7 +135,7 @@ void Engine::handle_creation_queue() {
 }
 void Engine::update_sprites() {
   for (auto& sp : sprites) {
-    sp->update();
+    sp->update(sprites);
   }
 }
 void Engine::delete_scheduled() {

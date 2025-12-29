@@ -2,25 +2,25 @@
 
 #include "Component.h"
 #include <string>
-
+#include <vector>
 namespace engine {
 class Sprite;
 typedef std::shared_ptr<Sprite> Sprite_ptr;
 class Sprite : public Component {
 
 public:
-  // static Sprite_ptr make(float x, float y, float w, float h,
-  //                        std::string path_to_image, std::string id,
-  //                        bool non_colliding_spawn_point);
-
-  const int get_velocity() { return velocity; }
+  const float get_velocity() { return velocity; }
   void draw() const;
-  virtual void update() {}
   void set_velocity(float v);
-  void move(int x, int y);
+  void move(float x, float y);
   bool is_intersecting(Sprite_ptr other);
-
-  ~Sprite() { SDL_DestroyTexture(sprite_image); }
+  virtual void update(std::vector<Sprite_ptr> others);
+  virtual void on_action_key_left() {}
+  virtual void on_action_key_right() {}
+  virtual void on_action_key_up() {}
+  virtual void on_action_key_down() {}
+  virtual void on_action_key_space() {}
+  virtual ~Sprite() { SDL_DestroyTexture(sprite_image); }
 
 protected:
   Sprite(float x, float y, float w, float h, std::string path_to_image,
@@ -29,12 +29,7 @@ protected:
 private:
   SDL_Texture* sprite_image;
   float velocity = 5;
-  bool collisionable = true;
-
-  int cooldown_counter = 0;
-  float projectile_cooldown = 0;
-  Sprite_ptr track_target;
-  bool has_track_target = false;
+  const bool* keystate;
 };
 
 } // namespace engine

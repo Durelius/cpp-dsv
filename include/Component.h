@@ -16,8 +16,8 @@ public:
   const SDL_FRect& get_frect() const { return rect; }
   const std::string get_id() const { return id; };
 
-  void set_coordinates(int x, int y);
-
+  void set_coordinates(float x, float y);
+  void move(float x, float y);
   virtual void on_mouse_down(const SDL_Event& event) {}
   virtual void on_mouse_up(const SDL_Event& event) {}
   virtual void on_key_down(const SDL_Event& event) {}
