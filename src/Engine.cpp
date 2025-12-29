@@ -14,7 +14,7 @@ Engine::Engine() {
                             cnts::gScreenHeight, 0);
   renderer = SDL_CreateRenderer(window, NULL);
   TTF_Init();
-  font = TTF_OpenFont((cnts::gResPath + "fonts/arial.ttf").c_str(), 24);
+  font = TTF_OpenFont((cnts::gResPath + "fonts/ARIAL.TTF").c_str(), 24);
 }
 
 Engine::~Engine() {
@@ -24,7 +24,9 @@ Engine::~Engine() {
   SDL_DestroyWindow(window);
   SDL_Quit();
 }
-
+void Engine::set_font(std::string path, float ptsize) {
+  font = TTF_OpenFont(path.c_str(), ptsize);
+}
 void Engine::add_ui_element(UI_Element_ptr ui_ptr) {
   if (!ui_ptr) {
     std::cerr << "Tried to add null ui element" << std::endl;

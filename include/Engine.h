@@ -33,6 +33,8 @@ public:
     creation_queue.push_back(std::move(task));
   }
 
+  void set_font(std::string path, float ptsize);
+
   void delete_sprite(Sprite_ptr sp) { sprite_deletion_queue.insert(sp); }
   void delete_ui_element(UI_Element_ptr ui_el) {
     ui_element_deletion_queue.insert(ui_el);

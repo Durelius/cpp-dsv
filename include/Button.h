@@ -15,6 +15,7 @@ public:
   void on_mouse_down(const SDL_Event& event);
   void on_mouse_up(const SDL_Event& event);
   void draw() const;
+  void set_color_pressed(Color color) { color_pressed = color; }
 
 protected:
   Button(float x, float y, float w, float h, std::string text, Action action,
@@ -23,7 +24,8 @@ protected:
 private:
   Action action;
   bool down = false;
-}; // namespace engine
+  Color color_pressed = {255, 192, 203, 255};
+};
+typedef std::shared_ptr<Button> Button_ptr;
 
-typedef std::shared_ptr<Button> button_ptr;
 } // namespace engine

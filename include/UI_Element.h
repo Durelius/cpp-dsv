@@ -6,6 +6,12 @@
 namespace engine {
 class UI_Element;
 
+struct Color {
+  Uint8 r;
+  Uint8 g;
+  Uint8 b;
+  Uint8 a;
+};
 typedef std::shared_ptr<UI_Element> UI_Element_ptr;
 class UI_Element : public Component {
 public:
@@ -15,6 +21,11 @@ public:
   void draw() const;
   void set_text(std::string new_text);
   std::string get_text() const { return text; }
+  void set_color(Color color) { this->color = color; }
+  void set_text_color(Color color) {
+    this->text_color = color;
+    set_text(text);
+  }
 
 protected:
   UI_Element(float x, float y, float w, float h, std::string text,
@@ -23,6 +34,8 @@ protected:
 private:
   std::string text;
   SDL_Texture* texture;
+  Color color = {255, 255, 255, 255};
+  Color text_color = {0, 0, 0, 255};
 };
 
 } // namespace engine
