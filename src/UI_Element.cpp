@@ -1,6 +1,7 @@
 #include "UI_Element.h"
 #include "Engine.h"
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
 namespace engine {
@@ -20,22 +21,32 @@ UI_Element::UI_Element(float x, float y, float w, float h, std::string text,
 }
 
 void UI_Element::draw() const {
-
-  SDL_SetRenderDrawColor(core.get_renderer(), color.r, color.g, color.b,
-                         color.a);
+  Uint8 prev_r, prev_g, prev_b, prev_a;
+  SDL_GetRenderDrawColor(core.get_renderer(), &prev_r, &prev_g, &prev_b,
+                         &prev_a);
+  auto [r, g, b, a] = get_color();
+  SDL_SetRenderDrawColor(core.get_renderer(), r, g, b, a);
   SDL_RenderFillRect(core.get_renderer(), &get_frect());
   SDL_RenderTexture(core.get_renderer(), texture, NULL, &get_frect());
+  SDL_SetRenderDrawColor(core.get_renderer(), prev_r, prev_g, prev_b, prev_a);
 }
-
-void UI_Element::set_text(std::string new_text) {
-  text = new_text;
+void UI_Element::update() {
   SDL_DestroyTexture(texture);
-  SDL_Surface* surface = TTF_RenderText_Blended(
-      core.get_font(), text.c_str(), 0,
-      {text_color.r, text_color.g, text_color.b, text_color.a});
+  auto [r, g, b, a] = text_color;
+  SDL_Surface* surface =
+      TTF_RenderText_Blended(core.get_font(), text.c_str(), 0, {r, g, b, a});
   texture = SDL_CreateTextureFromSurface(core.get_renderer(), surface);
   SDL_DestroySurface(surface);
 }
+void UI_Element::set_text(std::string new_text) {
+  text = new_text;
+  update();
+}
 
+void UI_Element::set_text_color(Color color) {
+  this->text_color = color;
+  set_text(text);
+  update();
+}
 UI_Element::~UI_Element() { SDL_DestroyTexture(texture); }
 } // namespace engine

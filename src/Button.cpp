@@ -18,14 +18,18 @@ Button::Button(float x, float y, float w, float h, std::string text,
     : UI_Element(x, y, w, h, text, id), action(action) {}
 
 void Button::draw() const {
-  Uint8 r, g, b, a;
-  SDL_GetRenderDrawColor(core.get_renderer(), &r, &g, &b, &a);
+  Uint8 prev_r, prev_g, prev_b, prev_a;
+  SDL_GetRenderDrawColor(core.get_renderer(), &prev_r, &prev_g, &prev_b,
+                         &prev_a);
   if (down)
-    SDL_SetRenderDrawColor(core.get_renderer(), 255, 0, 0, 255);
-  else
-    SDL_SetRenderDrawColor(core.get_renderer(), 255, 192, 203, 255); // rosa
+    SDL_SetRenderDrawColor(core.get_renderer(), color_pressed.r,
+                           color_pressed.g, color_pressed.b, color_pressed.a);
+  else {
+    auto [r, g, b, a] = get_color();
+    SDL_SetRenderDrawColor(core.get_renderer(), r, g, b, a);
+  }
   SDL_RenderFillRect(core.get_renderer(), &get_frect());
-  SDL_SetRenderDrawColor(core.get_renderer(), r, g, b, a);
+  SDL_SetRenderDrawColor(core.get_renderer(), prev_r, prev_g, prev_b, prev_a);
   UI_Element::draw();
 }
 
