@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-namespace gui {
+namespace engine {
 
 class Component {
   typedef std::shared_ptr<Component> Component_ptr;
@@ -13,7 +13,7 @@ public:
   virtual ~Component() {}
 
   virtual void draw() const = 0;
-  const SDL_FRect& get_rect() const { return rect; }
+  const SDL_FRect& get_frect() const { return rect; }
   const std::string get_id() const { return id; };
 
   void set_coordinates(int x, int y);
@@ -33,4 +33,4 @@ private:
   SDL_FRect rect;
   std::string id;
 };
-} // namespace gui
+} // namespace engine
