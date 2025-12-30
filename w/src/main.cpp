@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include <iostream>
+using namespace engine;
 int main() {
   std::cout << "test" << std::endl;
-  engine::core.game_run();
+  core.game_run();
 }

@@ -20,7 +20,7 @@ ENGINE_SRC_FILES = $(wildcard $(ENGINE_SRC_DIR)/*.cpp)
 W_SRC_FILES = $(wildcard $(W_SRC_DIR)/*.cpp)
 J_SRC_FILES = $(wildcard $(J_SRC_DIR)/*.cpp)
 W_INCLUDE_PATHS = -Iengine/include -Iw/include -I/opt/homebrew/include
-J_INCLUDE_PATHS = -Ij/include -Iengine/include -I/opt/homebrew/include
+J_INCLUDE_PATHS = -Iengine/include -Ij/include -I/opt/homebrew/include
 LIBRARY_PATHS = -Llib -L/opt/homebrew/lib
 LINKER_FLAGS = -lSDL3 -lSDL3_image -lSDL3_ttf
 
@@ -29,7 +29,7 @@ LINUX_CC = g++
 LINUX_COMPILER_FLAGS = -std=c++23 -Wall -O0 -g
 LINUX_INCLUDE_PATHS = -Iw/include -Iengine/include -I/usr/include
 W_LINUX_INCLUDE_PATHS = -Iengine/include -Iw/include -I/usr/include
-J_LINUX_INCLUDE_PATHS = -IJ/include -Iengine/include -I/usr/include
+J_LINUX_INCLUDE_PATHS = -Iengine/include -Ij/include -I/usr/include
 LINUX_LIBRARY_PATHS = -Llib -L/usr/lib
 LINUX_LINKER_FLAGS = -lSDL3 -lSDL3_image -lSDL3_ttf
 
@@ -46,7 +46,7 @@ endif
 
 # Build and run the project
 j:
-	$(CC) $(COMPILER_FLAGS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(ENGINE_SRC_FILES) $(J_SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/jplay && ./$(BUILD_DIR)/jplay
+	$(CC) $(COMPILER_FLAGS) $(J_INCLUDE_PATHS) $(LIBRARY_PATHS) $(ENGINE_SRC_FILES) $(J_SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/jplay && ./$(BUILD_DIR)/jplay
 w:
 	$(CC) $(COMPILER_FLAGS) $(W_INCLUDE_PATHS) $(LIBRARY_PATHS) $(ENGINE_SRC_FILES) $(W_SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/wplay && ./$(BUILD_DIR)/wplay
 all:
