@@ -30,11 +30,13 @@ public:
 
   void add_ui_element(UI_Element_ptr c);
   void add_sprite(Sprite_ptr c);
+  // adds anonymous function to creation queue which
+  // runs after game events on every frame
   void queue_for_add(std::function<void()> task) {
     creation_queue.push_back(std::move(task));
   }
 
-  void set_background(std::string path_to_image);
+  void set_background(std::string path_to_image, float velocity);
   void set_font(std::string path, float ptsize);
 
   void delete_sprite(Sprite_ptr sp) { sprite_deletion_queue.insert(sp); }
@@ -51,6 +53,7 @@ public:
 private:
   bool running;
   float scroll_offset{0};
+  float background_velocity = 0;
   SDL_Window* window;
   SDL_Renderer* renderer;
   TTF_Font* font;

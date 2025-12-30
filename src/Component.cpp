@@ -1,7 +1,5 @@
 #include "Component.h"
 #include "Engine.h"
-#include <iostream>
-#include <typeinfo>
 namespace engine {
 Component::Component(float x, float y, float w, float h, std::string id)
     : rect(x, y, w, h), id(id) {}

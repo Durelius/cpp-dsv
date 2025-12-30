@@ -29,8 +29,9 @@ Engine::~Engine() {
   SDL_Quit();
 }
 
-void Engine::set_background(std::string path_to_image) {
+void Engine::set_background(std::string path_to_image, float velocity) {
   background = IMG_LoadTexture(renderer, path_to_image.c_str());
+  background_velocity = velocity;
 }
 
 void Engine::set_font(std::string path, float ptsize) {
@@ -63,7 +64,6 @@ void Engine::add_sprite(Sprite_ptr sp) {
 
   this->queue_for_add([this, sp]() {
     for (auto sprite : sprites) {
-      // std::cout << component->get_id() << std::endl;
       if (sp->get_id() == sprite->get_id()) {
         std::cerr << "ID already exists" << std::endl;
         throw std::invalid_argument("ID already exists");
@@ -150,18 +150,22 @@ void Engine::handle_creation_queue() {
 }
 
 void Engine::draw_background() {
-  scroll_offset--;
+  SDL_FRect dst{scroll_offset, 0, constants::gScreenWidth,
+                constants::gScreenHeight};
+  SDL_RenderTexture(renderer, background, NULL, &dst);
+
+  if (background_velocity == 0)
+    return;
+
+  scroll_offset -= background_velocity;
+
   if (scroll_offset < -constants::gScreenWidth) {
     scroll_offset = 0;
   }
 
-  SDL_FRect dst{scroll_offset, 0, constants::gScreenWidth,
-                constants::gScreenHeight};
-
   SDL_FRect dst_offset{scroll_offset + constants::gScreenWidth, 0,
                        constants::gScreenWidth, constants::gScreenHeight};
 
-  SDL_RenderTexture(renderer, background, NULL, &dst);
   SDL_RenderTexture(renderer, background, NULL, &dst_offset);
 }
 

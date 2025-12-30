@@ -13,9 +13,9 @@ Sprite::Sprite(float x, float y, float w, float h, std::string path_to_image,
 }
 
 Sprite_ptr Sprite::make(float x, float y, float w, float h,
-                            std::string path_to_image, std::string base_id) {
+                        std::string path_to_image, std::string base_id) {
   std::string spec_id = "sp_" + base_id;
-  auto sp  = Sprite_ptr(new Sprite(x, y, w, h, path_to_image, spec_id));
+  auto sp = Sprite_ptr(new Sprite(x, y, w, h, path_to_image, spec_id));
   core.add_sprite(sp);
   return sp;
 }
