@@ -8,6 +8,7 @@
 #include <functional>
 #include <memory>
 #include <set>
+#include <string>
 #include <vector>
 namespace engine {
 
@@ -33,6 +34,7 @@ public:
     creation_queue.push_back(std::move(task));
   }
 
+  void set_background(std::string path_to_image);
   void set_font(std::string path, float ptsize);
 
   void delete_sprite(Sprite_ptr sp) { sprite_deletion_queue.insert(sp); }
@@ -47,19 +49,25 @@ public:
   void lock_frame_rate(time_point start);
 
 private:
+  bool running;
+  float scroll_offset{0};
   SDL_Window* window;
   SDL_Renderer* renderer;
   TTF_Font* font;
+  SDL_Texture* background;
+
   std::vector<std::function<void()>> creation_queue;
   std::vector<Sprite_ptr> sprites;
   std::vector<UI_Element_ptr> ui_elements;
   std::set<Sprite_ptr> sprite_deletion_queue;
   std::set<UI_Element_ptr> ui_element_deletion_queue;
+
+  void draw_background();
   void handle_creation_queue();
   void delete_sprite_from_vector(Sprite_ptr sp);
   void delete_ui_element_from_vector(UI_Element_ptr sp);
   void update_sprites();
-  bool running;
 };
+
 extern Engine core;
 } // namespace engine

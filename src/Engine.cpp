@@ -4,29 +4,39 @@
 #include "UI_Element.h"
 #include <iostream>
 #include <memory>
+#include <string>
 
 namespace cnts = constants;
 namespace engine {
 
 Engine::Engine() {
   SDL_Init(SDL_INIT_VIDEO);
+
   window = SDL_CreateWindow("GUIExempel", cnts::gScreenWidth,
                             cnts::gScreenHeight, 0);
   renderer = SDL_CreateRenderer(window, NULL);
+
   TTF_Init();
   font = TTF_OpenFont((cnts::gResPath + "fonts/ARIAL.TTF").c_str(), 24);
 }
 
 Engine::~Engine() {
+  SDL_DestroyTexture(background);
   TTF_CloseFont(font);
   TTF_Quit();
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
 }
+
+void Engine::set_background(std::string path_to_image) {
+  background = IMG_LoadTexture(renderer, path_to_image.c_str());
+}
+
 void Engine::set_font(std::string path, float ptsize) {
   font = TTF_OpenFont(path.c_str(), ptsize);
 }
+
 void Engine::add_ui_element(UI_Element_ptr ui_ptr) {
   if (!ui_ptr) {
     std::cerr << "Tried to add null ui element" << std::endl;
@@ -44,6 +54,7 @@ void Engine::add_ui_element(UI_Element_ptr ui_ptr) {
     ui_elements.push_back(ui_ptr);
   });
 }
+
 void Engine::add_sprite(Sprite_ptr sp) {
   if (!sp) {
     std::cerr << "Tried to add null component" << std::endl;
@@ -63,7 +74,6 @@ void Engine::add_sprite(Sprite_ptr sp) {
 }
 
 UI_Element_ptr Engine::get_ui_element_by_id(std::string id) {
-
   for (auto& ui_el : ui_elements) {
     if (ui_el->get_id() == id) {
       return ui_el;
@@ -71,6 +81,7 @@ UI_Element_ptr Engine::get_ui_element_by_id(std::string id) {
   }
   return nullptr;
 }
+
 Sprite_ptr Engine::get_sprite_by_id(std::string id) {
   for (auto& sp : sprites) {
     if (sp->get_id() == id) {
@@ -79,13 +90,14 @@ Sprite_ptr Engine::get_sprite_by_id(std::string id) {
   }
   return nullptr;
 }
+
 void Engine::game_draw() {
   SDL_RenderClear(renderer);
+  draw_background();
   for (auto ui_el : ui_elements)
     ui_el->draw();
   for (auto sp : sprites)
     sp->draw();
-  SDL_SetRenderDrawColor(renderer, 9, 13, 19, 255);
   SDL_RenderPresent(renderer);
 }
 
@@ -129,19 +141,37 @@ void Engine::game_run() {
     lock_frame_rate(start);
   }
 }
+
 void Engine::handle_creation_queue() {
   for (auto& task : creation_queue) {
     task();
   }
   creation_queue.clear();
 }
+
+void Engine::draw_background() {
+  scroll_offset--;
+  if (scroll_offset < -constants::gScreenWidth) {
+    scroll_offset = 0;
+  }
+
+  SDL_FRect dst{scroll_offset, 0, constants::gScreenWidth,
+                constants::gScreenHeight};
+
+  SDL_FRect dst_offset{scroll_offset + constants::gScreenWidth, 0,
+                       constants::gScreenWidth, constants::gScreenHeight};
+
+  SDL_RenderTexture(renderer, background, NULL, &dst);
+  SDL_RenderTexture(renderer, background, NULL, &dst_offset);
+}
+
 void Engine::update_sprites() {
   for (auto& sp : sprites) {
     sp->update(sprites);
   }
 }
-void Engine::delete_scheduled() {
 
+void Engine::delete_scheduled() {
   for (auto sp : sprite_deletion_queue) {
     delete_sprite_from_vector(sp);
   }
@@ -152,8 +182,8 @@ void Engine::delete_scheduled() {
   }
   ui_element_deletion_queue.clear();
 }
-void Engine::delete_sprite_from_vector(Sprite_ptr sp) {
 
+void Engine::delete_sprite_from_vector(Sprite_ptr sp) {
   std::string id = sp->get_id();
   for (auto it = sprites.begin(); it != sprites.end();) {
     if (it->get()->get_id() == id) {
@@ -163,6 +193,7 @@ void Engine::delete_sprite_from_vector(Sprite_ptr sp) {
     }
   }
 }
+
 void Engine::delete_ui_element_from_vector(UI_Element_ptr ui_el) {
   std::string id = ui_el->get_id();
   for (auto it = sprites.begin(); it != sprites.end();) {
@@ -173,6 +204,7 @@ void Engine::delete_ui_element_from_vector(UI_Element_ptr ui_el) {
     }
   }
 }
+
 void Engine::lock_frame_rate(time_point start) {
   auto end = steady_clock::now();
   duration dur = end - start;

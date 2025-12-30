@@ -13,7 +13,8 @@ constexpr int gScreenHeight{480};
 const std::string gResPath{"./resources/"};
 
 // PATH'S TO ALL YOUR EXTERNAL RESOURCES using 'gResPath'
-const std::string bg_str{gResPath + "images/bg.jpg"};
+const std::string bg_str{gResPath + "images/bg.png"};
+const std::string ship_str{gResPath + "images/ship.png"};
 const std::string sign_0{gResPath + "images/0.png"};
 const std::string sign_1{gResPath + "images/1.png"};
 const std::string sign_2{gResPath + "images/2.png"};

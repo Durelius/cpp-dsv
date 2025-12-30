@@ -9,6 +9,8 @@ typedef std::shared_ptr<Sprite> Sprite_ptr;
 class Sprite : public Component {
 
 public:
+  static Sprite_ptr make(float x, float y, float w, float h,
+                         std::string path_to_image, std::string base_id);
   const float get_velocity() { return velocity; }
   void draw() const;
   void set_velocity(float v);
