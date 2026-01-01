@@ -1,6 +1,7 @@
 #include "Sprite.h"
 #include "Component.h"
 #include "Engine.h"
+#include <SDL3/SDL_video.h>
 #include <memory>
 namespace engine {
 typedef std::shared_ptr<Sprite> Sprite_ptr;
@@ -35,6 +36,15 @@ void Sprite::update(std::vector<Sprite_ptr> others) {
 
 void Sprite::draw() const {
   SDL_RenderTexture(core.get_renderer(), sprite_image, NULL, &get_frect());
+}
+void Sprite::out_of_bounds(bool* x, bool* y) {
+
+  int win_height, win_width;
+  SDL_GetWindowSize(core.get_window(), &win_width, &win_height);
+  if (x)
+    *x = get_frect().x < 0 || get_frect().x > win_width - get_frect().w;
+  if (y)
+    *y = get_frect().y < 0 || get_frect().y > win_height - get_frect().h;
 }
 
 bool Sprite::is_intersecting(Sprite_ptr other) {

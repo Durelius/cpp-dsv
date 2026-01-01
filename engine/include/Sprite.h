@@ -17,6 +17,8 @@ public:
   void move(float x, float y);
   // returns true if other exists and is intersecting
   bool is_intersecting(Sprite_ptr other);
+  void out_of_bounds(bool* x, bool* y);
+
   // overshadowable method that runs on every frame
   virtual void update(std::vector<Sprite_ptr> others);
   // applies on both A and left arrow

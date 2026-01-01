@@ -3,6 +3,7 @@
 #include "Pipe.h"
 #include "Player.h"
 #include "Sprite.h"
+#include <cstddef>
 #include <random>
 #include <string>
 
@@ -45,9 +46,13 @@ int main(int argc, char* argv[]) {
         }
       }
     }
-    if (p->get_frect().y < 0 || p->get_frect().y > cns::gScreenHeight - 50) {
+    bool y;
+    p->out_of_bounds(nullptr, &y);
+    if (y)
       collided = true;
-    }
+    // if (p->get_frect().y < 0 || p->get_frect().y > cns::gScreenHeight - 50) {
+    //   collided = true;
+    // }
 
     if (collided) {
       for (auto s : core.get_sprites()) {
