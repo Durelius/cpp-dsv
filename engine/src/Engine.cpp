@@ -135,6 +135,11 @@ void Engine::game_run() {
     auto start = steady_clock::now();
     game_events();
     update_sprites();
+
+    if (custom_logic) {
+      custom_logic();
+    }
+
     delete_scheduled();
     handle_creation_queue();
     game_draw();

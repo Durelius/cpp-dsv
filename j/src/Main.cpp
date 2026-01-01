@@ -1,5 +1,5 @@
-#include "Constants.h"
 #include "Engine.h"
+#include "J_Constants.h"
 #include "Pipe.h"
 #include "Player.h"
 #include "Sprite.h"
@@ -8,7 +8,7 @@
 
 using namespace engine;
 using namespace game;
-namespace cns = constants;
+namespace cns = j_constants;
 
 int get_random_in_split_ranges() {
   static std::random_device rd;
@@ -34,9 +34,9 @@ int id = 0;
 int main(int argc, char* argv[]) {
 
   auto p = Player::make(64, 64, 50, 50, cns::player_str, "player");
-  core.set_background(constants::bg_str, .1);
+  core.set_background(j_constants::bg_str, .1);
 
-  core.game_run([&]() {
+  core.set_custom_logic([&]() {
     bool collided = false;
     for (auto s : core.get_sprites()) {
       if (s->get_id().substr(0, 2) == "pi") {
@@ -82,4 +82,5 @@ int main(int argc, char* argv[]) {
       }
     }
   });
+  core.game_run();
 }

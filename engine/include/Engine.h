@@ -27,6 +27,7 @@ public:
   SDL_Window* get_window() const { return window; }
   Sprite_ptr get_sprite_by_id(std::string id);
   UI_Element_ptr get_ui_element_by_id(std::string id);
+  std::vector<Sprite_ptr> get_sprites() { return sprites; }
 
   void add_ui_element(UI_Element_ptr c);
   void add_sprite(Sprite_ptr c);
@@ -36,6 +37,10 @@ public:
     creation_queue.push_back(std::move(task));
   }
 
+  // runs once per tick
+  void set_custom_logic(std::function<void()> custom_logic) {
+    this->custom_logic = custom_logic;
+  }
   void set_background(std::string path_to_image, float velocity);
   void set_font(std::string path, float ptsize);
 
@@ -70,6 +75,8 @@ private:
   void delete_sprite_from_vector(Sprite_ptr sp);
   void delete_ui_element_from_vector(UI_Element_ptr sp);
   void update_sprites();
+
+  std::function<void()> custom_logic = nullptr;
 };
 
 extern Engine core;
