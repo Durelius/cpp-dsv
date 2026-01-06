@@ -33,18 +33,29 @@ void Sprite::update(std::vector<Sprite_ptr> others) {
   if (keystate[SDL_SCANCODE_SPACE])
     on_action_key_space();
 }
+void Sprite::set_sprite_image(const std::string& path) {
+  SDL_Texture* new_texture = IMG_LoadTexture(core.get_renderer(), path.c_str());
 
+  if (!new_texture) {
+    return;
+  }
+
+  if (sprite_image) {
+    SDL_DestroyTexture(sprite_image);
+  }
+
+  sprite_image = new_texture;
+}
 void Sprite::draw() const {
   SDL_RenderTexture(core.get_renderer(), sprite_image, NULL, &get_frect());
 }
-void Sprite::out_of_bounds(bool* x, bool* y) {
-
+void Sprite::out_of_bounds(bool* x_res, bool* y_res) {
   int win_height, win_width;
   SDL_GetWindowSize(core.get_window(), &win_width, &win_height);
-  if (x)
-    *x = get_frect().x < 0 || get_frect().x > win_width - get_frect().w;
-  if (y)
-    *y = get_frect().y < 0 || get_frect().y > win_height - get_frect().h;
+  if (x_res)
+    *x_res = get_frect().x < 0 || get_frect().x > win_width - get_frect().w;
+  if (y_res)
+    *y_res = get_frect().y < 0 || get_frect().y > win_height - get_frect().h;
 }
 
 bool Sprite::is_intersecting(Sprite_ptr other) {
@@ -55,5 +66,5 @@ bool Sprite::is_intersecting(Sprite_ptr other) {
 }
 
 void Sprite::set_velocity(float v) { velocity = v; }
-
 } // namespace engine
+//

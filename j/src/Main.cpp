@@ -1,3 +1,4 @@
+#include "Constants.h"
 #include "Engine.h"
 #include "J_Constants.h"
 #include "Pipe.h"
@@ -9,7 +10,8 @@
 
 using namespace engine;
 using namespace game;
-namespace cns = j_constants;
+namespace j_cns = j_constants;
+namespace cns = constants;
 
 int get_random_in_split_ranges() {
   static std::random_device rd;
@@ -34,7 +36,7 @@ int id = 0;
 
 int main(int argc, char* argv[]) {
 
-  auto p = Player::make(64, 64, 50, 50, cns::player_str, "player");
+  auto p = Player::make(64, 64, 50, 50, j_cns::player_str, "player");
   core.set_background(j_constants::bg_str, .1);
 
   core.set_custom_logic([&]() {
@@ -73,7 +75,7 @@ int main(int argc, char* argv[]) {
 
     if (closest_pipe < 400) {
       Pipe::make(cns::gScreenWidth + 100, get_random_in_split_ranges(), 60, 720,
-                 cns::pipe_str, std::to_string(id));
+                 j_cns::pipe_str, std::to_string(id));
       id++;
     }
 

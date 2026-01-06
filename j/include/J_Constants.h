@@ -3,10 +3,6 @@
 
 namespace j_constants {
 
-// Constants
-constexpr int gScreenWidth{640};
-constexpr int gScreenHeight{480};
-
 // PATH TO YOUR RESOURCE FOLDER 'resources', 'gResPath'
 const std::string gResPath{"./j/resources/"};
 

@@ -14,11 +14,11 @@ public:
   const float get_velocity() { return velocity; }
   void draw() const;
   void set_velocity(float v);
-  void move(float x, float y);
   // returns true if other exists and is intersecting
   bool is_intersecting(Sprite_ptr other);
   void out_of_bounds(bool* x, bool* y);
 
+  void set_sprite_image(const std::string& path);
   // overshadowable method that runs on every frame
   virtual void update(std::vector<Sprite_ptr> others);
   // applies on both A and left arrow

@@ -30,13 +30,52 @@ void UI_Element::draw() const {
   SDL_RenderTexture(core.get_renderer(), texture, NULL, &get_frect());
   SDL_SetRenderDrawColor(core.get_renderer(), prev_r, prev_g, prev_b, prev_a);
 }
+// void UI_Element::update() {
+//   SDL_DestroyTexture(texture);
+//   auto [r, g, b, a] = text_color;
+//   SDL_Surface* surface =
+//       TTF_RenderText_Blended(core.get_font(), text.c_str(), 0, {r, g, b, a});
+//   texture = SDL_CreateTextureFromSurface(core.get_renderer(), surface);
+//   SDL_DestroySurface(surface);
+// }
 void UI_Element::update() {
-  SDL_DestroyTexture(texture);
+  if (texture) {
+    SDL_DestroyTexture(texture);
+    texture = nullptr;
+  }
+
   auto [r, g, b, a] = text_color;
+
+  auto font = core.get_font();
+  SDL_Renderer* renderer = core.get_renderer();
+
+  if (!font) {
+    SDL_Log("FONT IS NULL");
+    return;
+  }
+
   SDL_Surface* surface =
-      TTF_RenderText_Blended(core.get_font(), text.c_str(), 0, {r, g, b, a});
-  texture = SDL_CreateTextureFromSurface(core.get_renderer(), surface);
+      TTF_RenderText_Blended(font, text.c_str(), 0, {r, g, b, a});
+
+  if (!surface) {
+    SDL_Log("TTF_RenderText failed: %s", SDL_GetError());
+    return;
+  }
+
+  texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+  if (!texture) {
+    SDL_Log("CreateTexture failed: %s", SDL_GetError());
+    SDL_DestroySurface(surface);
+    return;
+  }
+
+  SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
   SDL_DestroySurface(surface);
+
+  float w, h;
+  SDL_GetTextureSize(texture, &w, &h);
+  SDL_Log("Text texture size: %f x %f", w, h);
 }
 void UI_Element::set_text(std::string new_text) {
   text = new_text;
@@ -45,7 +84,6 @@ void UI_Element::set_text(std::string new_text) {
 
 void UI_Element::set_text_color(Color color) {
   this->text_color = color;
-  set_text(text);
   update();
 }
 UI_Element::~UI_Element() { SDL_DestroyTexture(texture); }

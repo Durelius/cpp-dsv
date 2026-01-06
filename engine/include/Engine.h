@@ -37,6 +37,8 @@ public:
     creation_queue.push_back(std::move(task));
   }
 
+  void out_of_bounds(bool* res_x, bool* res_y, int x, int y, int h, int w);
+
   // runs once per tick
   void set_custom_logic(std::function<void()> custom_logic) {
     this->custom_logic = custom_logic;

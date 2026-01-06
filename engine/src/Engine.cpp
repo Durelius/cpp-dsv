@@ -15,8 +15,8 @@ Engine::Engine() {
   window = SDL_CreateWindow("GUIExempel", cnts::gScreenWidth,
                             cnts::gScreenHeight, 0);
   renderer = SDL_CreateRenderer(window, NULL);
-
   TTF_Init();
+
   font = TTF_OpenFont((cnts::gResPath + "fonts/ARIAL.TTF").c_str(), 24);
 }
 
@@ -38,6 +38,15 @@ void Engine::set_font(std::string path, float ptsize) {
   font = TTF_OpenFont(path.c_str(), ptsize);
 }
 
+void Engine::out_of_bounds(bool* x_res, bool* y_res, int x, int y, int h,
+                           int w) {
+  int win_height, win_width;
+  SDL_GetWindowSize(core.get_window(), &win_width, &win_height);
+  if (x_res)
+    *x_res = x < 0 || x > win_width - w;
+  if (y_res)
+    *y_res = y < 0 || y > win_height - h;
+}
 void Engine::add_ui_element(UI_Element_ptr ui_ptr) {
   if (!ui_ptr) {
     std::cerr << "Tried to add null ui element" << std::endl;
@@ -64,6 +73,7 @@ void Engine::add_sprite(Sprite_ptr sp) {
 
   this->queue_for_add([this, sp]() {
     for (auto sprite : sprites) {
+
       if (sp->get_id() == sprite->get_id()) {
         std::cerr << "ID already exists" << std::endl;
         throw std::invalid_argument("ID already exists");

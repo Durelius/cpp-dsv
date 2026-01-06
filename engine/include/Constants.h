@@ -9,6 +9,7 @@ namespace constants {
 constexpr int gScreenWidth{640};
 constexpr int gScreenHeight{480};
 
+constexpr int fps = 60;
 // PATH TO YOUR RESOURCE FOLDER 'resources', 'gResPath'
 const std::string gResPath{"./resources/"};
 
@@ -26,6 +27,8 @@ const std::string sign_7{gResPath + "images/7.png"};
 const std::string sign_8{gResPath + "images/8.png"};
 const std::string sign_9{gResPath + "images/9.png"};
 const std::string sample_str{gResPath + "sounds/sample.wav"};
+
+const std::string standard_font{gResPath + "fonts/ARIAL.TTF"};
 
 } // namespace constants
 
