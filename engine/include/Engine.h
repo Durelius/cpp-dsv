@@ -28,10 +28,10 @@ public:
   Sprite_ptr get_sprite_by_id(std::string id);
   UI_Element_ptr get_ui_element_by_id(std::string id);
   std::vector<Sprite_ptr> get_sprites() { return sprites; }
+  std::vector<UI_Element_ptr> get_ui_elements() { return ui_elements; }
 
   void add_ui_element(UI_Element_ptr c);
   void add_sprite(Sprite_ptr c);
-  void clear();
   // adds anonymous function to creation queue which
   // runs after game events on every frame
   void queue_for_add(std::function<void()> task) {

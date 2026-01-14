@@ -38,7 +38,6 @@ Engine::~Engine() {
   SDL_Quit();
 }
 
-void Engine::clear() { clearing = true; }
 void Engine::set_background(std::string path_to_image, float velocity) {
   background = IMG_LoadTexture(renderer, path_to_image.c_str());
   background_velocity = velocity;
@@ -68,7 +67,7 @@ void Engine::add_ui_element(UI_Element_ptr ui_ptr) {
       // std::cout << component->get_id() << std::endl;
       if (ui_ptr->get_id() == el->get_id()) {
         std::cerr << "ID already exists: " << ui_ptr->get_id() << std::endl;
-        throw std::invalid_argument("ID already exists");
+        throw std::invalid_argument("ID already exists: " + ui_ptr->get_id());
       }
     }
     ui_elements.push_back(ui_ptr);
@@ -86,7 +85,7 @@ void Engine::add_sprite(Sprite_ptr sp) {
 
       if (sp->get_id() == sprite->get_id()) {
         std::cerr << "ID already exists" << std::endl;
-        throw std::invalid_argument("ID already exists");
+        throw std::invalid_argument("ID already exists: " + sprite->get_id());
       }
     }
     sprites.push_back(sp);
@@ -151,7 +150,7 @@ void Engine::game_events() {
 
 void Engine::game_run() {
   running = true;
-  while (running && !clearing) {
+  while (running) {
     auto start = steady_clock::now();
     game_events();
     update_sprites();
@@ -164,16 +163,6 @@ void Engine::game_run() {
     handle_creation_queue();
     game_draw();
     lock_frame_rate(start);
-  }
-  if (clearing) {
-    for (auto ui : ui_elements) {
-      delete_ui_element(ui);
-    }
-    for (auto sprite : sprites) {
-      delete_sprite(sprite);
-    }
-    delete_scheduled();
-    clearing = false;
   }
 }
 
@@ -235,9 +224,9 @@ void Engine::delete_sprite_from_vector(Sprite_ptr sp) {
 
 void Engine::delete_ui_element_from_vector(UI_Element_ptr ui_el) {
   std::string id = ui_el->get_id();
-  for (auto it = sprites.begin(); it != sprites.end();) {
+  for (auto it = ui_elements.begin(); it != ui_elements.end();) {
     if (it->get()->get_id() == id) {
-      it = sprites.erase(it);
+      it = ui_elements.erase(it);
     } else {
       ++it;
     }

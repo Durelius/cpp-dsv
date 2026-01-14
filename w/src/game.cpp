@@ -2,6 +2,9 @@
 #include "Engine.h"
 #include "food_spawner.h"
 #include "player.h"
+#include <chrono>
+#include <iostream>
+#include <thread>
 namespace game {
 
 void Game::start() {
@@ -14,8 +17,22 @@ void Game::start() {
 }
 void Game::restart() {
   Food_Spawner::clear();
-  engine::core.clear();
-  start();
+
+  auto sprites = engine::core.get_sprites();
+  for (auto sp : sprites) {
+    engine::core.delete_sprite(sp);
+  }
+  auto ui_elements = engine::core.get_ui_elements();
+  for (auto ue : ui_elements) {
+    engine::core.delete_ui_element(ue);
+  }
+
+  engine::core.set_custom_logic([&]() {
+    if (engine::core.get_sprites().size() == 0 &&
+        engine::core.get_ui_elements().size() == 0) {
+      start();
+    }
+  });
 }
 
 } // namespace game
