@@ -25,7 +25,7 @@ W_INCLUDE_PATHS = -Iengine/include -Iw/include -I/opt/homebrew/include
 J_INCLUDE_PATHS = -Iengine/include -Ij/include -I/opt/homebrew/include
 LIBRARY_PATHS = -L/opt/homebrew/lib
 LINKER_FLAGS = -lSDL3 -lSDL3_image -lSDL3_ttf
-
+EXE = 
 # Linux-specific settings
 LINUX_CC = g++
 LINUX_COMPILER_FLAGS = -std=c++23 -Wall -O0 -g
@@ -35,8 +35,26 @@ J_LINUX_INCLUDE_PATHS = -Iengine/include -Ij/include -I/usr/include
 LINUX_LIBRARY_PATHS = -L/usr/lib
 LINUX_LINKER_FLAGS = -lSDL3 -lSDL3_image -lSDL3_ttf
 
+# Windows-specific settings (MinGW / MSYS2)
+WINDOWS_CC = x86_64-w64-mingw32-g++
+WINDOWS_COMPILER_FLAGS = -std=c++23 -Wall -O0 -g
+WINDOWS_INCLUDE_PATHS = -Iengine/include -Iw/include -IC:/msys64/mingw64/include
+J_WINDOWS_INCLUDE_PATHS = -Iengine/include -Ij/include -IC:/msys64/mingw64/include
+WINDOWS_LIBRARY_PATHS = -LC:/msys64/mingw64/lib
+WINDOWS_LINKER_FLAGS = -lSDL3 -lSDL3_image -lSDL3_ttf -lwinmm -lgdi32
+WINDOWS_EXE = .exe
+
+
 # Choose the correct settings based on the OS
-ifeq ($(UNAME), Linux)
+ifeq ($(OS),Windows_NT)
+    CC = $(WINDOWS_CC)
+    COMPILER_FLAGS = $(WINDOWS_COMPILER_FLAGS)
+    W_INCLUDE_PATHS = $(WINDOWS_INCLUDE_PATHS)
+    J_INCLUDE_PATHS = $(J_WINDOWS_INCLUDE_PATHS)
+    LIBRARY_PATHS = $(WINDOWS_LIBRARY_PATHS)
+    LINKER_FLAGS = $(WINDOWS_LINKER_FLAGS)
+    EXE = $(WINDOWS_EXE)
+else ifeq ($(UNAME), Linux)
     # Linux-specific settings
     CC = $(LINUX_CC)
     COMPILER_FLAGS = $(LINUX_COMPILER_FLAGS)
@@ -48,9 +66,9 @@ endif
 
 # Build and run the project
 j:
-	$(CC) $(COMPILER_FLAGS) $(J_INCLUDE_PATHS) $(LIBRARY_PATHS) $(ENGINE_SRC_FILES) $(J_SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/jplay && ./$(BUILD_DIR)/jplay
+	$(CC) $(COMPILER_FLAGS) $(J_INCLUDE_PATHS) $(LIBRARY_PATHS) $(ENGINE_SRC_FILES) $(J_SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/jplay && ./$(BUILD_DIR)/jplay$(EXE)
 w:
-	$(CC) $(COMPILER_FLAGS) $(W_INCLUDE_PATHS) $(LIBRARY_PATHS) $(ENGINE_SRC_FILES) $(W_SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/wplay && ./$(BUILD_DIR)/wplay
+	$(CC) $(COMPILER_FLAGS) $(W_INCLUDE_PATHS) $(LIBRARY_PATHS) $(ENGINE_SRC_FILES) $(W_SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/wplay && ./$(BUILD_DIR)/wplay$(EXE)
 w-debug:
 	$(CC) $(COMPILER_FLAGS) $(DEBUG_FLAGS) \
 	$(W_INCLUDE_PATHS) $(LIBRARY_PATHS) \
