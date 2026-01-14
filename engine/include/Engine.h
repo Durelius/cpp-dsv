@@ -31,6 +31,7 @@ public:
 
   void add_ui_element(UI_Element_ptr c);
   void add_sprite(Sprite_ptr c);
+  void clear();
   // adds anonymous function to creation queue which
   // runs after game events on every frame
   void queue_for_add(std::function<void()> task) {
@@ -77,7 +78,7 @@ private:
   void delete_sprite_from_vector(Sprite_ptr sp);
   void delete_ui_element_from_vector(UI_Element_ptr sp);
   void update_sprites();
-
+  bool clearing = false;
   std::function<void()> custom_logic = nullptr;
 };
 

@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "constants_w.h"
 #include "food.h"
+#include "player.h"
 #include <format>
 #include <memory>
 namespace game {
@@ -14,6 +15,7 @@ public:
   static bool is_on() { return on; }
   static void spawn();
   static void remove(std::string id);
+  static void clear();
   ~Food_Spawner() {}
 
 protected:
@@ -27,5 +29,6 @@ private:
   static int id_index;
   static int frame_counter;
   static bool on;
+  static double dynamic_spawn_time;
 };
 } // namespace game

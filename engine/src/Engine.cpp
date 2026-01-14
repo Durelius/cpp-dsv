@@ -4,6 +4,7 @@
 #include "UI_Element.h"
 #include <iostream>
 #include <memory>
+#include <print>
 #include <string>
 
 namespace cnts = constants;
@@ -17,7 +18,15 @@ Engine::Engine() {
   renderer = SDL_CreateRenderer(window, NULL);
   TTF_Init();
 
-  font = TTF_OpenFont((cnts::gResPath + "fonts/ARIAL.TTF").c_str(), 24);
+  // TTL_OpenFont loads the relative path in another way than the sprite,
+  // forcing us to use this constant
+  //  font = TTF_OpenFont((cnts::gResPath + "fonts/ARIAL.TTF").c_str(), 24);
+  font = TTF_OpenFont((cnts::standard_font).c_str(), 24);
+  if (!font) {
+    printf("%s\n", SDL_GetBasePath());
+    printf("TTF_OpenFont Error: %s\n", SDL_GetError());
+    return;
+  }
 }
 
 Engine::~Engine() {
@@ -29,6 +38,7 @@ Engine::~Engine() {
   SDL_Quit();
 }
 
+void Engine::clear() { clearing = true; }
 void Engine::set_background(std::string path_to_image, float velocity) {
   background = IMG_LoadTexture(renderer, path_to_image.c_str());
   background_velocity = velocity;
@@ -141,7 +151,7 @@ void Engine::game_events() {
 
 void Engine::game_run() {
   running = true;
-  while (running) {
+  while (running && !clearing) {
     auto start = steady_clock::now();
     game_events();
     update_sprites();
@@ -154,6 +164,16 @@ void Engine::game_run() {
     handle_creation_queue();
     game_draw();
     lock_frame_rate(start);
+  }
+  if (clearing) {
+    for (auto ui : ui_elements) {
+      delete_ui_element(ui);
+    }
+    for (auto sprite : sprites) {
+      delete_sprite(sprite);
+    }
+    delete_scheduled();
+    clearing = false;
   }
 }
 

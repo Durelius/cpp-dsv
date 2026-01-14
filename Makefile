@@ -15,6 +15,8 @@ BUILD_DIR = build/debug
 CC = g++-14
 COMPILER_FLAGS = -std=c++23 -Wall -O0 -g -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+ENGINE_RESOURCE_DIR = engine/resources
+W_RESOURCE_DIR = w/resources
 ENGINE_SRC_DIR = engine/src
 ENGINE_SRC_FILES = $(wildcard $(ENGINE_SRC_DIR)/*.cpp)
 W_SRC_FILES = $(wildcard $(W_SRC_DIR)/*.cpp)
@@ -49,5 +51,11 @@ j:
 	$(CC) $(COMPILER_FLAGS) $(J_INCLUDE_PATHS) $(LIBRARY_PATHS) $(ENGINE_SRC_FILES) $(J_SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/jplay && ./$(BUILD_DIR)/jplay
 w:
 	$(CC) $(COMPILER_FLAGS) $(W_INCLUDE_PATHS) $(LIBRARY_PATHS) $(ENGINE_SRC_FILES) $(W_SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/wplay && ./$(BUILD_DIR)/wplay
+w-debug:
+	$(CC) $(COMPILER_FLAGS) $(DEBUG_FLAGS) \
+	$(W_INCLUDE_PATHS) $(LIBRARY_PATHS) \
+	$(ENGINE_SRC_FILES) $(W_SRC_FILES) \
+	$(LINKER_FLAGS) $(SANITIZE_FLAGS) \
+	-o $(BUILD_DIR)/wplay_debug
 all:
 	$(CC) $(COMPILER_FLAGS) $(J_INCLUDE_PATHS) $(LIBRARY_PATHS) $(SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/$(OBJ_NAME) && ./$(BUILD_DIR)/$(OBJ_NAME)

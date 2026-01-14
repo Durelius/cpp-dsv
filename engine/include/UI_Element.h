@@ -21,7 +21,7 @@ public:
   void draw() const;
   void set_text(std::string new_text);
   std::string get_text() const { return text; }
-  void set_color(Color color) { this->color = color; }
+  void set_color(Color color);
   void set_text_color(Color color);
   Color get_text_color() const { return text_color; }
 

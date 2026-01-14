@@ -28,7 +28,9 @@ const std::string sign_8{gResPath + "images/8.png"};
 const std::string sign_9{gResPath + "images/9.png"};
 const std::string sample_str{gResPath + "sounds/sample.wav"};
 
-const std::string standard_font{gResPath + "fonts/ARIAL.TTF"};
+// TTL_OpenFont loads the relative path in another way than the sprite, forcing
+// us to use this constant
+const std::string standard_font{"./engine/resources/fonts/ARIAL.TTF"};
 
 } // namespace constants
 
