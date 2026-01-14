@@ -36,7 +36,7 @@ LINUX_LIBRARY_PATHS = -L/usr/lib
 LINUX_LINKER_FLAGS = -lSDL3 -lSDL3_image -lSDL3_ttf
 
 # Windows-specific settings (MinGW / MSYS2)
-WINDOWS_CC = x86_64-w64-mingw32-g++
+WINDOWS_CC = g++
 WINDOWS_COMPILER_FLAGS = -std=c++23 -Wall -O0 -g
 WINDOWS_INCLUDE_PATHS = -Iengine/include -Iw/include -IC:/msys64/mingw64/include
 J_WINDOWS_INCLUDE_PATHS = -Iengine/include -Ij/include -IC:/msys64/mingw64/include
@@ -70,10 +70,14 @@ j:
 w:
 	$(CC) $(COMPILER_FLAGS) $(W_INCLUDE_PATHS) $(LIBRARY_PATHS) $(ENGINE_SRC_FILES) $(W_SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/wplay && ./$(BUILD_DIR)/wplay$(EXE)
 w-debug:
-	$(CC) $(COMPILER_FLAGS) $(DEBUG_FLAGS) \
-	$(W_INCLUDE_PATHS) $(LIBRARY_PATHS) \
-	$(ENGINE_SRC_FILES) $(W_SRC_FILES) \
-	$(LINKER_FLAGS) $(SANITIZE_FLAGS) \
-	-o $(BUILD_DIR)/wplay_debug
+clang++ -std=c++23 -g -O0 -mmacosx-version-min=13.0 \
+-Iengine/include -Iw/include -I/opt/homebrew/include \
+-L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib \
+engine/src/*.cpp w/src/*.cpp \
+-lSDL3 -lSDL3_image -lSDL3_ttf \
+-fsanitize=address \
+-o build/debug/wplay_debug
+
+
 all:
 	$(CC) $(COMPILER_FLAGS) $(J_INCLUDE_PATHS) $(LIBRARY_PATHS) $(SRC_FILES) $(LINKER_FLAGS) -o $(BUILD_DIR)/$(OBJ_NAME) && ./$(BUILD_DIR)/$(OBJ_NAME)
